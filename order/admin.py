@@ -10,4 +10,4 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Exchange)
 class ExchangeAdmin(admin.ModelAdmin):
-    list_display = ['name', ]
+    list_display = ['name', 'is_active']

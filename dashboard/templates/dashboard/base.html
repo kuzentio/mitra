@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load bootstrap4 staticfiles project_info %}
+{% exchanges_online as exchanges_online %}
+<html lang="en">
+<head>
+    <title>{% block title %}{% project_name %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    {% bootstrap_javascript jquery='full' %}
+    {% block css_imports %}{% endblock %}
+    {% block js_imports %}{% endblock %}
+</head>
+<body>
+    {% bootstrap_messages %}
+    {% block navbar %}
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+      <a class="navbar-brand" href="#">Logo</a>
+      <ul class="navbar-nav">
+      {% for exchange in exchanges_online %}
+        <li role="presentation" class="nav-item">
+            <a href="{% url 'order:list' exchange_name=exchange.name %}"
+               class="navbar-brand"
+               role="button" aria-haspopup="true"
+               aria-expanded="false"> {{ exchange.name|title }}
+            </a>
+        </li>
+      {% endfor %}
+      </ul>
+    </nav>
+    {% endblock %}
+    {% block content %}{% endblock %}
+</body>
+<script>
+    {% block script %}{% endblock %}
+</script>
+</html>

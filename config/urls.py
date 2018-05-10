@@ -6,12 +6,11 @@ from django.views import defaults as default_views
 
 
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='page/home.html'), name='home'),
+    url(r'^$', TemplateView.as_view(template_name='dashboard/index.html'), name='index'),
 
     url(settings.ADMIN_URL, admin.site.urls),
 
     url(r'^orders/', include('order.urls')),
-
 ]
 
 if settings.DEBUG:
