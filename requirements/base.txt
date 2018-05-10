@@ -1,3 +1,4 @@
 Django==2.0.5
 psycopg2-binary==2.7.4
 django-import-export==1.0.0
+django-bootstrap3==10.0.1

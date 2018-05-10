@@ -5,10 +5,10 @@ from order import constance
 
 
 class Exchange(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, choices=constance.EXCHANGES_CHOICES, unique=True)
 
     def __str__(self):
-        return self.name
+        return self.get_name_display()
 
 
 class Order(models.Model):
