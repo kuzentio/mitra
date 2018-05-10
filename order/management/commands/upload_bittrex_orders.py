@@ -55,13 +55,13 @@ class Command(BaseCommand):
         if created:
             self.total_orders_created += 1
 
-    def handle(self, *args, **options):
-        path = options.get('file')
+    def get_order_data(self, path):
         ordered_items_mapping = []
         if not path:
             raise CommandError("Please provide file path to CSV file with orders")
         with open(path, 'r') as csvfile:
-            spamreader = csv.reader((line.replace('\0','') for line in csvfile), delimiter=",")
+            spamreader = csv.reader((line.replace('\0', '') for line in csvfile), delimiter=",")
+            # spamreader = csv.reader(csvfile)
             for counter, row in enumerate(spamreader):
                 _result = []
                 if not row:
@@ -82,11 +82,57 @@ class Command(BaseCommand):
                         clean_value = row[position]
 
                     _result.append((item[1], clean_value))
-                self.create_bittrex_order(_result)
-            if self.total_orders_created % 100:
-                print('I created over {} Bittrex orders'.format(self.total_orders_created))
-        self.stdout.write('Done.')
+                yield _result
+
+    def handle(self, *args, **options):
+        i = 0
+        path = options.get('file')
+        iter_order = iter(self.get_order_data(path))
+        for order in iter_order:
+            i += 1
+            self.create_bittrex_order(order)
+            if i % 1000 == 0:
+                print(i)
+        self.stdout.write('Done')
         return
+
+
+
+
+
+
+
+        # -------------------------
+        # ordered_items_mapping = []
+        # if not path:
+        #     raise CommandError("Please provide file path to CSV file with orders")
+        # with open(path, 'rb') as csvfile:
+        #     spamreader = csv.reader((line.replace('\0','') for line in csvfile), delimiter=",")
+        #     for counter, row in enumerate(spamreader):
+        #         _result = []
+        #         if not row:
+        #             continue
+        #         if counter == 0:
+        #             ordered_items_mapping = self._get_ordered_mapping(row)
+        #             continue
+        #         for position, item in enumerate(ordered_items_mapping):
+        #             if item[1] == 'type':
+        #                 clean_value = self.clean_type(row[position])
+        #             elif item[1] in ['quantity', 'price', 'commission']:
+        #                 clean_value = Decimal(row[position])
+        #             elif item[1] in ['opened_at', 'closed_at']:
+        #                 clean_value = tz.localize(datetime.strptime(row[position], '%m/%d/%Y %I:%M:%S %p'))
+        #             elif item[1] == '-':
+        #                 continue
+        #             else:
+        #                 clean_value = row[position]
+        #
+        #             _result.append((item[1], clean_value))
+        #         yield _result
+        #     if self.total_orders_created % 100:
+        #         print('I created over {} Bittrex orders'.format(self.total_orders_created))
+        # self.stdout.write('Done.')
+        # return
 
 
 

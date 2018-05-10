@@ -5,7 +5,6 @@ from order.models import Order
 
 class OrderView(ListView):
     model = Order
-    paginate_by = 20
 
     def get_queryset(self):
         qs = super(OrderView, self).get_queryset()
