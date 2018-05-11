@@ -16,7 +16,7 @@
 <div class="container-fluid">
     {% block navbar %}
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-      <a class="navbar-brand" href="#">Logo</a>
+      <a href="/"><img src="{% static 'img/mitra.png' %}" width="50" height="50"></a>
       <ul class="navbar-nav">
       {% for exchange in exchanges_online %}
         <li role="presentation" class="nav-item">
