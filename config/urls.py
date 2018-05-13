@@ -10,6 +10,8 @@ urlpatterns = [
 
     url(settings.ADMIN_URL, admin.site.urls),
 
+    url(r'^api/', include('api.urls')),
+
     url(r'^orders/', include('order.urls')),
 ]
 

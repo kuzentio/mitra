@@ -8,7 +8,7 @@
 
 {% block content %}
     <h4>Orders:</h4>
-    <table class="table table-striped display responsive nowrap" id="orders">
+    <table class="table table-responsive table-striped display nowrap" id="orders">
         <thead class="">
             <tr>
                 <th>ID</th>
@@ -23,13 +23,54 @@
         </thead>
         <tbody>
         </tbody>
+        <tfoot>
+        <tr>
+            <th>ID</th>
+            <th>Exchange</th>
+            <th>Type</th>
+            <th>Pair</th>
+            <th>Quantity</th>
+            <th>Commission</th>
+            <th>Price</th>
+            <th>Closed</th>
+        </tr>
+        </tfoot>
     </table>
 {% endblock %}
 
 {% block scripts %}
     <script type="application/javascript">
-        $(document).ready( function () {
-            $('#orders').DataTable();
+    $(document).ready( function () {
+        $('#orders tfoot th').each( function () {
+            var title = $(this).text();
+            $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
         } );
+        // DataTable
+        var table = $('#orders').DataTable({
+            "serverSide": true,
+            "ajax": "{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
+            "columns": [
+                {"data": "id", "searchable": true},
+                {"data": "exchange", "searchable": true, "name": "exchange.name"},
+                {"data": "type", "searchable": true},
+                {"data": "pair", "searchable": true},
+                {"data": "quantity", "searchable": true},
+                {"data": "commission", "searchable": true},
+                {"data": "price", "searchable": true},
+                {"data": "closed_at", "searchable": true}
+            ]
+        });
+        // Apply the search at table footer
+        table.columns().every( function () {
+            var that = this;
+            $( 'input', this.footer() ).on( 'keyup change', function () {
+                if ( that.search() !== this.value ) {
+                    that
+                        .search( this.value )
+                        .draw();
+                }
+            } );
+        } );
+    } );
     </script>
 {% endblock %}

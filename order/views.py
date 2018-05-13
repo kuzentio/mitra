@@ -6,9 +6,8 @@ from order.models import Order
 class OrderView(ListView):
     model = Order
 
-    def get_queryset(self):
-        qs = super(OrderView, self).get_queryset()
-        exchange_name = self.kwargs.get('exchange_name')
-        if exchange_name is None:
-            return qs
-        return qs.filter(exchange__name=exchange_name.lower())
+    def get_context_data(self,  **kwargs):
+        context = super(OrderView, self).get_context_data()
+        context['exchange_name'] = self.kwargs.get('exchange_name', 'none')
+
+        return context

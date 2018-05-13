@@ -10,6 +10,8 @@ from django.utils.timezone import get_current_timezone
 from order.models import Order
 
 tz = get_current_timezone()
+
+
 class Command(BaseCommand):
     help = 'Upload Bittrex orders in CSV format'
     total_orders_created = 0
@@ -61,7 +63,6 @@ class Command(BaseCommand):
             raise CommandError("Please provide file path to CSV file with orders")
         with open(path, 'r') as csvfile:
             spamreader = csv.reader((line.replace('\0', '') for line in csvfile), delimiter=",")
-            # spamreader = csv.reader(csvfile)
             for counter, row in enumerate(spamreader):
                 _result = []
                 if not row:
@@ -95,56 +96,3 @@ class Command(BaseCommand):
                 print(i)
         self.stdout.write('Done')
         return
-
-
-
-
-
-
-
-        # -------------------------
-        # ordered_items_mapping = []
-        # if not path:
-        #     raise CommandError("Please provide file path to CSV file with orders")
-        # with open(path, 'rb') as csvfile:
-        #     spamreader = csv.reader((line.replace('\0','') for line in csvfile), delimiter=",")
-        #     for counter, row in enumerate(spamreader):
-        #         _result = []
-        #         if not row:
-        #             continue
-        #         if counter == 0:
-        #             ordered_items_mapping = self._get_ordered_mapping(row)
-        #             continue
-        #         for position, item in enumerate(ordered_items_mapping):
-        #             if item[1] == 'type':
-        #                 clean_value = self.clean_type(row[position])
-        #             elif item[1] in ['quantity', 'price', 'commission']:
-        #                 clean_value = Decimal(row[position])
-        #             elif item[1] in ['opened_at', 'closed_at']:
-        #                 clean_value = tz.localize(datetime.strptime(row[position], '%m/%d/%Y %I:%M:%S %p'))
-        #             elif item[1] == '-':
-        #                 continue
-        #             else:
-        #                 clean_value = row[position]
-        #
-        #             _result.append((item[1], clean_value))
-        #         yield _result
-        #     if self.total_orders_created % 100:
-        #         print('I created over {} Bittrex orders'.format(self.total_orders_created))
-        # self.stdout.write('Done.')
-        # return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
