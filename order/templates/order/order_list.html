@@ -48,7 +48,14 @@
         // DataTable
         var table = $('#orders').DataTable({
             "serverSide": true,
-            "ajax": "{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
+            "processing": true,
+            "ajax": {
+                url:"{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
+                dataSrc: function(json) {
+                    console.log(json);
+                    return json.data;
+                }
+            },
             "columns": [
                 {"data": "id", "searchable": true},
                 {"data": "exchange", "searchable": true, "name": "exchange.name"},

@@ -6,3 +6,8 @@ EXCHANGES_CHOICES = [
     ('bittrex', 'Bittrex'),
     ('binance', 'Binance'),
 ]
+
+ORDER_TYPE_CHOICES = [
+    (ORDER_TYPE_BUY, 'Buy',),
+    (ORDER_TYPE_SELL, 'Sell')
+]
