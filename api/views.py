@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from rest_framework import generics
 
 from api.serializers import OrderSerializer

@@ -7,6 +7,24 @@
 {% endblock %}
 
 {% block content %}
+    <div class="col-md-4">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Total BUY:</th>
+                    <td id="id-total-buy">0</td>
+                </tr>
+                <tr>
+                    <th>Total SELL:</th>
+                    <td id="id-total-sell">0</td>
+                </tr>
+                <tr>
+                    <th>Revenue:</th>
+                    <td id="id-total-revenue">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <h4>Orders:</h4>
     <table class="table table-responsive table-striped display nowrap" id="orders">
         <thead class="">
@@ -53,6 +71,9 @@
                 url:"{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
                 dataSrc: function(json) {
                     console.log(json);
+                    $('#id-total-buy').html(json.BUY);
+                    $('#id-total-sell').html(json.SELL);
+                    $('#id-total-revenue').html(json.revenue);
                     return json.data;
                 }
             },
