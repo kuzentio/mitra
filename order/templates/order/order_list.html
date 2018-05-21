@@ -1,12 +1,32 @@
 {% extends 'dashboard/base.html' %}
+
+{% load staticfiles %}
+
 {% block css_imports %}
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
 {% endblock %}
 {% block js_imports %}
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
 {% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-md-5">
+            <p>Choose date range:</p>
+            <p id="date_filter">
+                <div class="input-group input-group-sm">
+                    <span id="date-label-from" class="date-label">From:</span>
+                    <input class="form-control date_range_filter date" type="text" id="min" />
+                    <span id="date-label-to" class="date-label">To:</span>
+                    <input class="form-control date_range_filter date" type="text" id="max" />
+                </div>
+            </p>
+        </div>
+    </div>
+    <hr/>
+    <p>Summary:</p>
     <div class="col-md-4">
         <table class="table">
             <tbody>
@@ -54,11 +74,60 @@
         </tr>
         </tfoot>
     </table>
+    <hr/>
 {% endblock %}
 
 {% block scripts %}
     <script type="application/javascript">
+
     $(document).ready( function () {
+        function updateURLParameter(url, param, paramVal){
+            var newAdditionalURL = "";
+            var tempArray = url.split("?");
+            var baseURL = tempArray[0];
+            var additionalURL = tempArray[1];
+            var temp = "";
+            if (additionalURL) {
+                tempArray = additionalURL.split("&");
+                for (var i=0; i<tempArray.length; i++){
+                    if(tempArray[i].split('=')[0] != param){
+                        newAdditionalURL += temp + tempArray[i];
+                        temp = "&";
+                    }
+                }
+            }
+
+            var rows_txt = temp + "" + param + "=" + paramVal;
+            return baseURL + "?" + newAdditionalURL + rows_txt;
+        }
+        $("#min").datepicker({
+            onSelect: function () {
+                var url = table.ajax.url();
+                var min_date = $(this).val();
+                var newUrl = updateURLParameter(url, 'closed_at__min', min_date);
+                table.ajax.url(newUrl).load();
+                table.draw();
+            },
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonImage: "{% static "img/calendar.png" %}"
+        });
+        $("#max").datepicker({
+            onSelect: function () {
+                var url = table.ajax.url();
+                var max_date = $(this).val();
+                var newUrl = updateURLParameter(url, 'closed_at__max', max_date);
+                table.ajax.url(newUrl).load();
+                table.draw();
+            },
+            changeMonth: true,
+            changeYear: true,
+            showOn: "button",
+            buttonImage: "{% static "img/calendar.png" %}"
+        });
+
+
         $('#orders tfoot th').each( function () {
             var title = $(this).text();
             $(this).html( '<input type="text" placeholder="Search '+title+'" />' );

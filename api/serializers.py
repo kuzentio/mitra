@@ -5,6 +5,7 @@ from order.models import Order
 
 class OrderSerializer(serializers.ModelSerializer):
     closed_at = serializers.DateTimeField(format='%d/%m/%Y %I:%M:%S %p')
+    # closed_at = serializers.DateTimeField(format='%m/%d/%Y')
     exchange = serializers.SerializerMethodField()
 
     def get_exchange(self, obj):
