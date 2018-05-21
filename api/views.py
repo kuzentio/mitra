@@ -40,10 +40,9 @@ class APIOrderView(generics.ListAPIView):
         return qs.filter(**extra_query)
 
     def get_aggregations(self):
-        qs = self.filter_queryset(
+        aggregations = utils.aggregate_orders_by_types(
             self.get_queryset()
         )
-        aggregations = utils.aggregate_orders_by_types(qs)
 
         return aggregations
 
