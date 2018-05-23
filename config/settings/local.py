@@ -39,3 +39,5 @@ SHELL_PLUS_POST_IMPORTS = (
     ('order.factories', '*'),
     ('profile.factories', '*'),
 )
+
+USE_TZ = False

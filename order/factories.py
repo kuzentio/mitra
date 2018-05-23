@@ -13,7 +13,7 @@ class ExchangeFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'order.Exchange'
         django_get_or_create = ('name',)
-    name = FuzzyChoice(constance.EXCHANGES_CHOICES)
+    name = FuzzyChoice([exchange[0] for exchange in constance.EXCHANGES_CHOICES])
     is_active = True
 
 

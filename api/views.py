@@ -33,6 +33,8 @@ class APIOrderView(generics.ListAPIView):
             closed_at_range[1] = max_date
         extra_query['closed_at__range'] = closed_at_range
 
+        extra_query['pair__icontains'] = self.request.query_params.get('pair', '')
+
         exchange = self.kwargs.get('exchange_name')
         if exchange is not None:
             extra_query['exchange__name'] = exchange

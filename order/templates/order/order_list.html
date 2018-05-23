@@ -5,6 +5,7 @@
 {% block css_imports %}
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 {% endblock %}
 {% block js_imports %}
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
@@ -12,17 +13,34 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-5">
-            <p>Choose date range:</p>
-            <p id="date_filter">
-                <div class="input-group input-group-sm">
-                    <span id="date-label-from" class="date-label">From:</span>
-                    <input class="form-control date_range_filter date" type="text" id="min" />
-                    <span id="date-label-to" class="date-label">To:</span>
-                    <input class="form-control date_range_filter date" type="text" id="max" />
+    <div class=grid">
+        <p>Choose date range:</p>
+        <div class="row">
+            <div class="col-md-3">
+                <span class="add-on"><i class="icon-calendar" id="cal"></i></span>
+                <i class="fa fa-calendar"></i>
+                <span id="date-label-from" class="date-label">From:</span>
+                <input class="form-control date_range_filter date" type="text" id="min" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <i class="fa fa-calendar"></i>
+                <span id="date-label-to" class="date-label">To:</span>
+                <input class="form-control date_range_filter date" type="text" id="max" />
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <i class="fa fa-align-justify"></i>
+                    <label for="pair">Select currency pair:</label>
+                    <select class="form-control" id="pair">
+                        <option value=""></option>
+                    </select>
                 </div>
-            </p>
+            </div>
         </div>
     </div>
     <hr/>
@@ -62,16 +80,16 @@
         <tbody>
         </tbody>
         <tfoot>
-        <tr>
-            <th>ID</th>
-            <th>Exchange</th>
-            <th>Type</th>
-            <th>Pair</th>
-            <th>Quantity</th>
-            <th>Commission</th>
-            <th>Price</th>
-            <th>Closed</th>
-        </tr>
+            <tr>
+                <th>ID</th>
+                <th>Exchange</th>
+                <th>Type</th>
+                <th>Pair</th>
+                <th>Quantity</th>
+                <th>Commission</th>
+                <th>Price</th>
+                <th>Closed</th>
+            </tr>
         </tfoot>
     </table>
     <hr/>
@@ -81,7 +99,7 @@
     <script type="application/javascript">
 
     $(document).ready( function () {
-        function updateURLParameter(url, param, paramVal){
+        function updateURLParameter(url, param, paramVal) {
             var newAdditionalURL = "";
             var tempArray = url.split("?");
             var baseURL = tempArray[0];
@@ -100,6 +118,33 @@
             var rows_txt = temp + "" + param + "=" + paramVal;
             return baseURL + "?" + newAdditionalURL + rows_txt;
         }
+        function init_pairs(pairs){
+          var self = $('#pair');
+          var $option=$("<option></option>");
+          $('#pair').empty();
+          self.append($option);
+          $.each(pairs, function(index, pair) {
+            $option = $("<option></option>")
+              .attr("value", pair)
+              .text(pair);
+            self.append($option);
+          });
+        }
+
+        function update_pairs(pairs) {
+          var self = $('#pair');
+          var $option=$('<option value=""></option>');
+          self.empty();
+          $.each(pairs, function(index, pair) {
+            $option = $("<option></option>")
+              .attr("value", pair)
+              .text(pair);
+            self.append($option);
+          });
+          $option=$('<option value=""></option>');
+          self.append($option);
+        }
+
         $("#min").datepicker({
             onSelect: function () {
                 var url = table.ajax.url();
@@ -109,10 +154,8 @@
                 table.draw();
             },
             changeMonth: true,
-            changeYear: true,
-            showOn: "button",
-            buttonImage: "{% static "img/calendar.png" %}"
-        });
+            changeYear: true
+        })
         $("#max").datepicker({
             onSelect: function () {
                 var url = table.ajax.url();
@@ -122,16 +165,16 @@
                 table.draw();
             },
             changeMonth: true,
-            changeYear: true,
-            showOn: "button",
-            buttonImage: "{% static "img/calendar.png" %}"
+            changeYear: true
         });
-
-
-        $('#orders tfoot th').each( function () {
-            var title = $(this).text();
-            $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-        } );
+        $('#pair').change(function () {
+            var url = table.ajax.url();
+            var pair = $(this).val();
+            var newUrl = updateURLParameter(url, 'pair', pair);
+            table.ajax.url(newUrl).load();
+            table.draw();
+            update_pairs([pair])
+        });
         // DataTable
         var table = $('#orders').DataTable({
             "serverSide": true,
@@ -139,10 +182,15 @@
             "ajax": {
                 url:"{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
                 dataSrc: function(json) {
-                    console.log(json);
-                    $('#id-total-buy').html(json.BUY);
-                    $('#id-total-sell').html(json.SELL);
-                    $('#id-total-revenue').html(json.revenue);
+                    var _pairs = json.pairs;
+                    if (typeof _pairs !== 'undefined' && _pairs.length === 1){
+                        $('#id-total-buy').html(json.BUY);
+                        $('#id-total-sell').html(json.SELL);
+                        $('#id-total-revenue').html(json.revenue);
+                    }
+                    if (typeof  _pairs !== 'undefined' && _pairs.length > 1) {
+                        init_pairs(_pairs)
+                    }
                     return json.data;
                 }
             },
@@ -157,17 +205,12 @@
                 {"data": "closed_at", "searchable": true}
             ]
         });
-        // Apply the search at table footer
-        table.columns().every( function () {
-            var that = this;
-            $( 'input', this.footer() ).on( 'keyup change', function () {
-                if ( that.search() !== this.value ) {
-                    that
-                        .search( this.value )
-                        .draw();
-                }
-            } );
-        } );
+
     } );
     </script>
+    <style>
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 8px 75px; /* e.g. change 8x to 4px here */
+    }
+    </style>
 {% endblock %}

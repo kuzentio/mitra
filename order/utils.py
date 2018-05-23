@@ -34,22 +34,30 @@ def get_not_matched_quantity(queryset):
 
 
 def aggregate_orders_by_types(queryset):
-    aggregations = {}
+    aggregations = dict()
+    aggregations['pairs'] = list(
+        queryset.values_list('pair', flat=True).distinct()
+    )
 
-    for any_type in [constance.ORDER_TYPE_SELL, constance.ORDER_TYPE_BUY]:
-        aggregations[any_type] = queryset.filter(
-            type=any_type
-        ).annotate(
-            total=(F('quantity') * F('price')),
-        ).aggregate(
-            Sum('total'),
-        )
-    _type, _quantity = get_not_matched_quantity(queryset.all())
-    if _quantity:
-        aggregations[_type]['total__sum'] = aggregations[_type]['total__sum'] - get_amount_from_avg_order(queryset, _type, _quantity)
+    total_buy = aggregations[constance.ORDER_TYPE_BUY] = Decimal('0.0')
+    total_sell = aggregations[constance.ORDER_TYPE_SELL] = Decimal('0.0')
 
-    total_buy = aggregations[constance.ORDER_TYPE_BUY].pop('total__sum') or Decimal('0.0')
-    total_sell = aggregations[constance.ORDER_TYPE_SELL].pop('total__sum') or Decimal('0.0')
+    if aggregations['pairs']:
+        for any_type in [constance.ORDER_TYPE_SELL, constance.ORDER_TYPE_BUY]:
+            aggregations[any_type] = queryset.filter(
+                type=any_type
+            ).annotate(
+                total=(F('quantity') * F('price')),
+            ).aggregate(
+                Sum('total'),
+            )
+        _type, _quantity = get_not_matched_quantity(queryset.all())
+        if _quantity:
+            aggregations[_type]['total__sum'] = aggregations[_type]['total__sum'] - get_amount_from_avg_order(
+                queryset, _type, _quantity
+            )
+        total_buy = aggregations[constance.ORDER_TYPE_BUY].pop('total__sum')
+        total_sell = aggregations[constance.ORDER_TYPE_SELL].pop('total__sum')
 
     aggregations[constance.ORDER_TYPE_BUY] = total_buy
     aggregations[constance.ORDER_TYPE_SELL] = total_sell
