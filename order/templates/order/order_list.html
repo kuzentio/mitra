@@ -1,4 +1,5 @@
 {% extends 'dashboard/base.html' %}
+{% load bootstrap4 %}
 
 {% load staticfiles %}
 
@@ -13,36 +14,28 @@
 {% endblock %}
 
 {% block content %}
-    <div class=grid">
-        <p>Choose date range:</p>
-        <div class="row">
-            <div class="col-md-3">
-                <span class="add-on"><i class="icon-calendar" id="cal"></i></span>
-                <i class="fa fa-calendar"></i>
-                <span id="date-label-from" class="date-label">From:</span>
-                <input class="form-control date_range_filter date" type="text" id="min" />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <i class="fa fa-calendar"></i>
-                <span id="date-label-to" class="date-label">To:</span>
-                <input class="form-control date_range_filter date" type="text" id="max" />
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <i class="fa fa-align-justify"></i>
-                    <label for="pair">Select currency pair:</label>
-                    <select class="form-control" id="pair">
-                        <option value=""></option>
-                    </select>
+    <hr/>
+    <p>Select search parameters:</p>
+    <div class="grid">
+        <div class="col-md-3">
+            <form class="form">
+            {% for field in form %}
+                <div class="form-group {% if field.errors %}has-error{% endif %}" id="group_{{ field.name }}">
+                    {% if not field.name == 'pair' %}
+                        <i class="fa fa-calendar"></i>
+                    {% else %}
+                        <i class="fa fa-align-justify"></i>
+                    {% endif %}
+                    <label for="id_{{ field.name }}" class="control-label">{{ field.label }}</label>
+                    <div class="input-group md-3">
+                        {{ field }}
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
+            </form>
         </div>
     </div>
+
     <hr/>
     <p>Summary:</p>
     <div class="col-md-4">
@@ -97,8 +90,17 @@
 
 {% block scripts %}
     <script type="application/javascript">
-
     $(document).ready( function () {
+        var $form = $('.form');
+        $form.on('submit', function (e) {
+            e.preventDefault();
+            var search_params = '&'+$(this).serialize();
+            var url = table.ajax.url();
+            table.ajax.url(url + search_params).load();
+            table.draw();
+
+        });
+
         function updateURLParameter(url, param, paramVal) {
             var newAdditionalURL = "";
             var tempArray = url.split("?");
@@ -118,10 +120,11 @@
             var rows_txt = temp + "" + param + "=" + paramVal;
             return baseURL + "?" + newAdditionalURL + rows_txt;
         }
+
         function init_pairs(pairs){
-          var self = $('#pair');
+          var self = $('#id_pair');
           var $option=$("<option></option>");
-          $('#pair').empty();
+          $('#id_pair').empty();
           self.append($option);
           $.each(pairs, function(index, pair) {
             $option = $("<option></option>")
@@ -132,7 +135,7 @@
         }
 
         function update_pairs(pairs) {
-          var self = $('#pair');
+          var self = $('#id_pair');
           var $option=$('<option value=""></option>');
           self.empty();
           $.each(pairs, function(index, pair) {
@@ -145,35 +148,25 @@
           self.append($option);
         }
 
-        $("#min").datepicker({
+        $("#id_min_date").datepicker({
             onSelect: function () {
-                var url = table.ajax.url();
-                var min_date = $(this).val();
-                var newUrl = updateURLParameter(url, 'closed_at__min', min_date);
-                table.ajax.url(newUrl).load();
-                table.draw();
+                console.log($form);
+                $form.submit()
             },
             changeMonth: true,
             changeYear: true
         })
-        $("#max").datepicker({
+
+        $("#id_max_date").datepicker({
             onSelect: function () {
-                var url = table.ajax.url();
-                var max_date = $(this).val();
-                var newUrl = updateURLParameter(url, 'closed_at__max', max_date);
-                table.ajax.url(newUrl).load();
-                table.draw();
+                $form.submit()
             },
             changeMonth: true,
             changeYear: true
         });
-        $('#pair').change(function () {
-            var url = table.ajax.url();
-            var pair = $(this).val();
-            var newUrl = updateURLParameter(url, 'pair', pair);
-            table.ajax.url(newUrl).load();
-            table.draw();
-            update_pairs([pair])
+
+        $('#id_pair').change(function () {
+            $form.submit();
         });
         // DataTable
         var table = $('#orders').DataTable({
@@ -209,8 +202,8 @@
     } );
     </script>
     <style>
-    table.dataTable tbody th, table.dataTable tbody td {
-        padding: 8px 75px; /* e.g. change 8x to 4px here */
-    }
+        table.dataTable tbody th, table.dataTable tbody td {
+            padding: 8px 75px; /* e.g. change 8x to 4px here */
+        }
     </style>
 {% endblock %}

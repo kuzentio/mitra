@@ -3,7 +3,7 @@ from datetime import datetime
 from rest_framework import generics
 
 from api.serializers import OrderSerializer
-from order import utils
+from order import utils, forms
 from order import constance
 from order.models import Order
 
@@ -11,6 +11,13 @@ from order.models import Order
 class APIOrderView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def get(self, request, *args, **kwargs):
+        form = forms.OrderPeriodForm(
+            request.GET.dict()
+        )
+
+        return super(APIOrderView, self).get(request)
 
     def get_queryset(self):
         extra_query = {}
@@ -20,15 +27,15 @@ class APIOrderView(generics.ListAPIView):
             constance.DEFAULT_MAX_DATE,
         ]
 
-        if self.request.query_params.get('closed_at__min') is not None:
+        if self.request.query_params.get('min_date'):
             min_date = datetime.strptime(
-                self.request.query_params.get('closed_at__min'), '%m/%d/%Y'
+                self.request.query_params.get('min_date'), '%m/%d/%Y'
             )
             closed_at_range[0] = min_date
 
-        if self.request.query_params.get('closed_at__max') is not None:
+        if self.request.query_params.get('max_date'):
             max_date = datetime.strptime(
-                self.request.query_params.get('closed_at__max'), '%m/%d/%Y'
+                self.request.query_params.get('max_date'), '%m/%d/%Y'
             )
             closed_at_range[1] = max_date
         extra_query['closed_at__range'] = closed_at_range
