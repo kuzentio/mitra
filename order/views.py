@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
 from order.forms import OrderPeriodForm
-from order.models import Order, Exchange
+from order.models import Exchange
 
 
 class OrderView(TemplateView):

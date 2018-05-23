@@ -102,15 +102,15 @@
         });
 
         function init_pairs(pairs){
-          var self = $('#id_pair');
+          var $self = $('#id_pair');
           var $option=$("<option></option>");
-          $('#id_pair').empty();
-          self.append($option);
+          $self.empty();
+          $self.append($option);
           $.each(pairs, function(index, pair) {
             $option = $("<option></option>")
               .attr("value", pair)
               .text(pair);
-            self.append($option);
+            $self.append($option);
           });
         }
 
