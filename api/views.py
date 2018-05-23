@@ -3,7 +3,7 @@ from datetime import datetime
 from rest_framework import generics
 
 from api.serializers import OrderSerializer
-from order import utils, forms
+from order import utils
 from order import constance
 from order.models import Order
 
@@ -11,13 +11,6 @@ from order.models import Order
 class APIOrderView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-
-    def get(self, request, *args, **kwargs):
-        form = forms.OrderPeriodForm(
-            request.GET.dict()
-        )
-
-        return super(APIOrderView, self).get(request)
 
     def get_queryset(self):
         extra_query = {}

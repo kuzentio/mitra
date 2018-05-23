@@ -101,26 +101,6 @@
 
         });
 
-        function updateURLParameter(url, param, paramVal) {
-            var newAdditionalURL = "";
-            var tempArray = url.split("?");
-            var baseURL = tempArray[0];
-            var additionalURL = tempArray[1];
-            var temp = "";
-            if (additionalURL) {
-                tempArray = additionalURL.split("&");
-                for (var i=0; i<tempArray.length; i++){
-                    if(tempArray[i].split('=')[0] != param){
-                        newAdditionalURL += temp + tempArray[i];
-                        temp = "&";
-                    }
-                }
-            }
-
-            var rows_txt = temp + "" + param + "=" + paramVal;
-            return baseURL + "?" + newAdditionalURL + rows_txt;
-        }
-
         function init_pairs(pairs){
           var self = $('#id_pair');
           var $option=$("<option></option>");
@@ -134,23 +114,9 @@
           });
         }
 
-        function update_pairs(pairs) {
-          var self = $('#id_pair');
-          var $option=$('<option value=""></option>');
-          self.empty();
-          $.each(pairs, function(index, pair) {
-            $option = $("<option></option>")
-              .attr("value", pair)
-              .text(pair);
-            self.append($option);
-          });
-          $option=$('<option value=""></option>');
-          self.append($option);
-        }
-
         $("#id_min_date").datepicker({
-            onSelect: function () {
-                console.log($form);
+            onSelect: function (selected) {
+                $("#id_max_date").datepicker("option","minDate", selected);
                 $form.submit()
             },
             changeMonth: true,
@@ -158,7 +124,8 @@
         })
 
         $("#id_max_date").datepicker({
-            onSelect: function () {
+            onSelect: function (selected) {
+                $("#id_min_date").datepicker("option","maxDate", selected);
                 $form.submit()
             },
             changeMonth: true,
@@ -181,8 +148,11 @@
                         $('#id-total-sell').html(json.SELL);
                         $('#id-total-revenue').html(json.revenue);
                     }
-                    if (typeof  _pairs !== 'undefined' && _pairs.length > 1) {
-                        init_pairs(_pairs)
+                    if (typeof  _pairs !== 'undefined' && _pairs.length > 1 || _pairs.length === 0) {
+                        init_pairs(_pairs);
+                        $('#id-total-buy').html(0);
+                        $('#id-total-sell').html(0);
+                        $('#id-total-revenue').html(0);
                     }
                     return json.data;
                 }
