@@ -21,4 +21,5 @@ class Account(models.Model):
     password = models.CharField(max_length=255)
     api_key = models.CharField(max_length=255, blank=True, null=True)
     api_secret = models.CharField(max_length=255, blank=True, null=True)
+    is_active = models.BooleanField(default=True, help_text='Is active account on exchange')
 

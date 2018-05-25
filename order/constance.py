@@ -16,3 +16,18 @@ ORDER_TYPE_CHOICES = [
 
 DEFAULT_MIN_DATE = datetime(2010, 1, 1)
 DEFAULT_MAX_DATE = datetime(2020, 1, 1)
+
+BITTREX_ORDER_MAPPING = (
+    ('OrderUuid', 'uuid',),
+    ('Exchange', 'pair'),
+    ('Type', 'type'),
+    ('OrderType', 'type'),
+    ('Quantity', 'quantity'),
+    ('Limit', 'price'),
+    ('CommissionPaid', 'commission'),
+    ('Commission', 'commission'),
+    ('Price', '-'),
+    ('Opened', 'opened_at'),
+    ('TimeStamp', 'opened_at'),
+    ('Closed', 'closed_at'),
+)

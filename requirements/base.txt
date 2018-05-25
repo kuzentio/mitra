@@ -4,3 +4,5 @@ django-import-export==1.0.0
 djangorestframework==3.8.2
 djangorestframework-datatables==0.3.0
 django-bootstrap4==0.0.6
+
+python-bittrex==0.3.0

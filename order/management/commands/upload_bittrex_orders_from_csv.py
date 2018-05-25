@@ -7,6 +7,7 @@ from decimal import Decimal
 from django.core.management import BaseCommand, CommandError
 from django.utils.timezone import get_current_timezone
 
+from order.constance import BITTREX_ORDER_MAPPING
 from order.models import Order
 
 tz = get_current_timezone()
@@ -15,17 +16,6 @@ tz = get_current_timezone()
 class Command(BaseCommand):
     help = 'Upload Bittrex orders in CSV format'
     total_orders_created = 0
-    field_mapping = (
-        ('OrderUuid', 'uuid',),
-        ('Exchange', 'pair'),
-        ('Type', 'type'),
-        ('Quantity', 'quantity'),
-        ('Limit', 'price'),
-        ('CommissionPaid', 'commission'),
-        ('Price', '-'),
-        ('Opened', 'opened_at'),
-        ('Closed', 'closed_at'),
-    )
 
     def add_arguments(self, parser):
         parser.add_argument('file', type=str)
@@ -33,7 +23,7 @@ class Command(BaseCommand):
     def _get_ordered_mapping(self, row):
         ordered_items_mapping = []
         for _field in row:
-            field = dict(self.field_mapping).get(_field)
+            field = dict(BITTREX_ORDER_MAPPING).get(_field)
             if field is not None:
                 ordered_items_mapping.append((_field, field))
             else:
