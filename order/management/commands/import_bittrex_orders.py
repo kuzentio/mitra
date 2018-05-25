@@ -3,7 +3,7 @@ from django.core.management import BaseCommand, CommandError
 
 from order.constance import BITTREX_ORDER_MAPPING, EXCHANGES_CHOICES
 from order.models import Order, Exchange
-from profile.models import Account
+from profile_app.models import Account
 
 
 class Command(BaseCommand):

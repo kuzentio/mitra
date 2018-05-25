@@ -15,7 +15,7 @@ class UserFactory(factory.DjangoModelFactory):
 
 class AccountFactory(factory.DjangoModelFactory):
     class Meta:
-        model = 'profile.Account'
+        model = 'profile_app.Account'
         django_get_or_create = ('user', )
 
     user = factory.SubFactory(UserFactory)

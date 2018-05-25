@@ -24,7 +24,7 @@ class OrderFactory(factory.DjangoModelFactory):
 
     uuid = factory.Faker('uuid4')
     exchange = factory.SubFactory('order.factories.ExchangeFactory')
-    account = factory.SubFactory('profile.factories.AccountFactory')
+    account = factory.SubFactory('profile_app.factories.AccountFactory')
 
     type = factory.Iterator([constance.ORDER_TYPE_BUY, constance.ORDER_TYPE_SELL])
     pair = 'BTC-ETH'

@@ -19,7 +19,7 @@ class Order(models.Model):
     )
     uuid = models.CharField(max_length=255, blank=True, null=True, help_text='Remote unique identifier')
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
-    account = models.ForeignKey('profile.Account', on_delete=models.CASCADE)
+    account = models.ForeignKey('profile_app.Account', on_delete=models.CASCADE)
 
     type = models.CharField(max_length=5, choices=ORDER_TYPE_CHOICES)
     pair = models.CharField(max_length=20)

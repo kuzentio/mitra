@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap4',
 
-    'profile',
+    'profile_app',
     'order',
     'dashboard',
 
