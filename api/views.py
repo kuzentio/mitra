@@ -22,13 +22,13 @@ class APIOrderView(generics.ListAPIView):
 
         if self.request.query_params.get('min_date'):
             min_date = datetime.strptime(
-                self.request.query_params.get('min_date'), '%m/%d/%Y'
+                self.request.query_params.get('min_date'), '%d.%m.%Y'
             )
             closed_at_range[0] = min_date
 
         if self.request.query_params.get('max_date'):
             max_date = datetime.strptime(
-                self.request.query_params.get('max_date'), '%m/%d/%Y'
+                self.request.query_params.get('max_date'), '%d.%m.%Y'
             )
             closed_at_range[1] = max_date
         extra_query['closed_at__range'] = closed_at_range

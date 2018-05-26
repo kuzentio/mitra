@@ -4,7 +4,7 @@ from django.forms import widgets
 
 class OrderPeriodForm(forms.Form):
     min_date = forms.DateField(
-        input_formats='%m/%d/%Y',
+        input_formats='dd.mm.yy',
         required=False,
         label='From:',
         widget=widgets.Input(
@@ -12,7 +12,7 @@ class OrderPeriodForm(forms.Form):
         )
     )
     max_date = forms.DateField(
-        input_formats='%m/%d/%Y',
+        input_formats='dd.mm.yy',
         required=False,
         label='To:',
         widget=widgets.Input(

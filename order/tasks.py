@@ -1,20 +1,12 @@
 from celery import shared_task
-from django.conf import settings
-from django.contrib.auth import get_user_model
-
-from order.models import Order
+from profile_app.models import Account
+from django.core.management import call_command
 
 
-# @shared_task(name='order.tasks.debug_task', bind=True)
 @shared_task(bind=True)
-def debug_task(self):
-    UserModel = get_user_model()
-    result = UserModel.objects.all().values_list('email', flat=True)
-    print(' '.join(result))
-    print('------------------------------------')
-    print('------------------------------------')
-    print('------------------------------------')
-    print(settings.INSTALLED_APPS)
-    print([o.id for o in Order.objects.all()])
+def import_bittrex_orders_task(self):
+    emails = Account.objects.all().values_list('user__email', flat=True)
+    for email in emails:
+        call_command('import_bittrex_orders', account_email=email)
 
 

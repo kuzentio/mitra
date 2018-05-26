@@ -19,6 +19,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 INSTALLED_APPS += (
     'django_extensions',
+    'django_celery_beat',
     # 'django_pdb',
 )
 
