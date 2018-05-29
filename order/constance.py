@@ -7,6 +7,9 @@ ORDER_TYPE_SELL = 'SELL'
 EXCHANGES_CHOICES = [
     ('bittrex', 'Bittrex'),
     ('binance', 'Binance'),
+    ('bitfinex', 'Bitfinex'),
+    ('bitfinex', 'Bitfinex'),
+    ('okcoin', 'Okcoin'),
 ]
 
 ORDER_TYPE_CHOICES = [
