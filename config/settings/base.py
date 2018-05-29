@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap4',
 
+    'django_celery_beat',
+    'django_celery_results',
+
     'profile_app',
     'order',
     'dashboard',
