@@ -2,12 +2,10 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 
-if os.environ.get('ENV') in ['prod', 'worker']:
-    module = 'config.settings.production'
+if os.environ.get('ENV') is not None:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.{}'.format(os.environ.get('ENV')))
 else:
-    module = 'config.settings.local'
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.local')
 
 app = Celery('config')
 
