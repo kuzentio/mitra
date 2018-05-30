@@ -1,5 +1,3 @@
-
-
 from .base import *  # noqa
 
 AUTH_PASSWORD_VALIDATORS = []
@@ -19,7 +17,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 INSTALLED_APPS += (
     'django_extensions',
-    # 'django_pdb',
 )
 
 REST_FRAMEWORK = {
