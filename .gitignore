@@ -51,7 +51,7 @@ coverage.xml
 *.pot
 
 # Django stuff:
-staticfiles/
+
 
 # Flask stuff:
 instance/
@@ -302,5 +302,4 @@ pip-selfcheck.json
 
 .idea/
 
-config/static/
 .notes

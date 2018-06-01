@@ -4,12 +4,12 @@
 {% load staticfiles %}
 
 {% block css_imports %}
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{% static 'datatables-dt/css/jquery.dataTables.css' %}">
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
 {% endblock %}
 {% block js_imports %}
-    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
 {% endblock %}
 
