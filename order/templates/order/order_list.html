@@ -199,6 +199,9 @@
                         $('#id-total-buy').html(json.BUY);
                         $('#id-total-sell').html(json.SELL);
                         $('#id-total-revenue').html(json.revenue);
+                        console.log(_pairs);
+                        init_pairs(_pairs);
+                        $('#id_pair').val(_pairs);
                     }
                     if (typeof  _pairs !== 'undefined' && _pairs.length > 1 || _pairs.length === 0) {
                         init_pairs(_pairs);
