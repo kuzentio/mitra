@@ -1,7 +1,7 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
-from order import constance
+from apps.order import constance
 
 
 class Exchange(models.Model):

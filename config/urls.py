@@ -10,9 +10,9 @@ urlpatterns = [
 
     url(settings.ADMIN_URL, admin.site.urls),
 
-    url(r'^api/', include('api.urls')),
+    url(r'^api/', include('apps.api.urls')),
 
-    url(r'^orders/', include('order.urls')),
+    url(r'^orders/', include('apps.order.urls')),
 ]
 
 if settings.DEBUG:

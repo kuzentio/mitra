@@ -1,9 +1,9 @@
-from bittrex import Bittrex, API_V2_0, API_V1_1
+from bittrex import Bittrex, API_V1_1
 from django.core.management import BaseCommand, CommandError
 
-from order.constance import BITTREX_ORDER_MAPPING, EXCHANGES_CHOICES
-from order.models import Order, Exchange
-from profile_app.models import Account
+from apps.order.constance import BITTREX_ORDER_MAPPING, EXCHANGES_CHOICES
+from apps.order.models import Order, Exchange
+from apps.profile_app.models import Account
 
 
 class Command(BaseCommand):

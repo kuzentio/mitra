@@ -6,7 +6,7 @@ import factory
 from dateutil.tz import datetime
 from factory.fuzzy import FuzzyDecimal, FuzzyChoice
 
-from order import constance
+from apps.order import constance
 
 
 class ExchangeFactory(factory.DjangoModelFactory):

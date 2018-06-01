@@ -1,5 +1,5 @@
 from django.contrib import admin
-from order.models import Order, Exchange
+from apps.order.models import Order, Exchange
 
 
 @admin.register(Order)

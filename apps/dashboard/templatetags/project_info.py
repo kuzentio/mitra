@@ -1,7 +1,7 @@
 from django import template
 
 from config import settings
-from order.models import Exchange
+from apps.order.models import Exchange
 
 register = template.Library()
 

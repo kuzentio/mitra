@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db.models import Sum, F, Avg
 
-from order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
+from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 
 
 def get_amount_from_avg_order(queryset, _type, _quantity):

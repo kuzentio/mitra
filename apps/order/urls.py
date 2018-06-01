@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from order import views
+from apps.order import views
 
 app_name = 'order'
 

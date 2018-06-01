@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from api.views import APIOrderView
+from apps.api.views import APIOrderView
 
 app_name = 'api'
 

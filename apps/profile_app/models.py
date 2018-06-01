@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from order.models import Exchange
+from apps.order.models import Exchange
 
 
 class Legal(models.Model):

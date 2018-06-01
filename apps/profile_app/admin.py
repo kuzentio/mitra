@@ -1,5 +1,5 @@
 from django.contrib import admin
-from profile_app.models import Legal, Account
+from apps.profile_app.models import Legal, Account
 
 
 @admin.register(Legal)

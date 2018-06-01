@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
-from order.forms import OrderPeriodForm
-from order.models import Exchange
+from apps.order.forms import OrderPeriodForm
+from apps.order.models import Exchange
 
 
 class OrderView(TemplateView):

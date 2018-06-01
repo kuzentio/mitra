@@ -2,10 +2,10 @@ from datetime import datetime
 
 from rest_framework import generics
 
-from api.serializers import OrderSerializer
-from order import utils
-from order import constance
-from order.models import Order
+from apps.api.serializers import OrderSerializer
+from apps.order import utils
+from apps.order import constance
+from apps.order.models import Order
 
 
 class APIOrderView(generics.ListAPIView):

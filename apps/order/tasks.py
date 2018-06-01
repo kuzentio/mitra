@@ -1,5 +1,5 @@
 from celery import shared_task
-from profile_app.models import Account
+from apps.profile_app import Account
 from django.core.management import call_command
 
 
