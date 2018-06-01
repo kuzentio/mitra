@@ -17,7 +17,7 @@ class Order(models.Model):
         (constance.ORDER_TYPE_BUY, constance.ORDER_TYPE_BUY.lower()),
         (constance.ORDER_TYPE_SELL, constance.ORDER_TYPE_SELL.lower()),
     )
-    uuid = models.CharField(max_length=255, blank=True, null=True, help_text='Remote unique identifier')
+    uuid = models.UUIDField(max_length=255, blank=True, null=True, help_text='Remote unique identifier')
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
     account = models.ForeignKey('profile_app.Account', on_delete=models.CASCADE)
 
