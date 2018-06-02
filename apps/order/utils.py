@@ -71,8 +71,8 @@ def aggregate_orders_by_types(queryset):
         total_buy = aggregations[ORDER_TYPE_BUY].pop('total__sum') + aggregations[ORDER_TYPE_BUY].pop('commission__sum')
         total_sell = aggregations[ORDER_TYPE_SELL].pop('total__sum') - aggregations[ORDER_TYPE_SELL].pop('commission__sum')
 
-    aggregations[ORDER_TYPE_BUY] = total_buy
-    aggregations[ORDER_TYPE_SELL] = total_sell
-    aggregations['revenue'] = total_sell - total_buy
+    aggregations[ORDER_TYPE_BUY] = round(total_buy, 8)
+    aggregations[ORDER_TYPE_SELL] = round(total_sell, 8)
+    aggregations['revenue'] = round(total_sell - total_buy, 8)
 
     return aggregations
