@@ -2,6 +2,8 @@ import factory
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 
+from apps.profile_app.models import Account
+
 
 class UserFactory(factory.DjangoModelFactory):
     class Meta:
@@ -15,11 +17,11 @@ class UserFactory(factory.DjangoModelFactory):
 
 class AccountFactory(factory.DjangoModelFactory):
     class Meta:
-        model = 'profile_app.Account'
+        model = Account
         django_get_or_create = ('user', )
 
     user = factory.SubFactory(UserFactory)
-    exchange = factory.SubFactory('order.factories.ExchangeFactory')
+    exchange = factory.SubFactory('apps.order.factories.ExchangeFactory')
     username = factory.Faker('user_name')
     password = factory.Faker('name')
     api_key = 'AWESOMEAPIKEY'

@@ -37,9 +37,9 @@ REST_FRAMEWORK = {
 }
 
 SHELL_PLUS_POST_IMPORTS = (
-    ('order.factories', '*'),
-    ('profile_app.factories', '*'),
-    ('order.tasks', '*')
+    ('apps.order.factories', '*'),
+    ('apps.profile_app.factories', '*'),
+    ('apps.order.tasks', '*')
 )
 
 USE_TZ = False
