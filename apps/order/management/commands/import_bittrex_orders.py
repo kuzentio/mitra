@@ -53,7 +53,7 @@ class Command(BaseCommand):
             raise CommandError(
                 "Please provide -account_email. See details --help"
             )
-        account = Account.objects.filter(user__email=email, is_active=True)
+        account = Account.objects.filter(email=email, is_active=True)
         if not account.exists():
             raise CommandError(
                 "Could not find account with {} email".format(email)

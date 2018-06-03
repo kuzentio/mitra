@@ -8,7 +8,6 @@ EXCHANGES_CHOICES = [
     ('bittrex', 'Bittrex'),
     ('binance', 'Binance'),
     ('bitfinex', 'Bitfinex'),
-    ('bitfinex', 'Bitfinex'),
     ('okcoin', 'Okcoin'),
 ]
 

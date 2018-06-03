@@ -3,6 +3,20 @@
 import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 
+from apps.order import constance
+from apps.order.models import Exchange
+
+
+def create_exchanges_instances(apps, schema_editor):
+    for exchange, exchange_title in constance.EXCHANGES_CHOICES:
+        is_active = False
+        if exchange == 'bittrex':
+            is_active = True
+        Exchange.objects.create(
+            name=exchange,
+            is_active=is_active
+
+        )
 
 class Migration(migrations.Migration):
 
@@ -20,6 +34,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=False)),
             ],
         ),
+        migrations.RunPython(create_exchanges_instances, reverse_code=migrations.RunPython.noop),
         migrations.CreateModel(
             name='Order',
             fields=[
