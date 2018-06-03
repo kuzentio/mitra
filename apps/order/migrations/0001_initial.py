@@ -15,8 +15,8 @@ def create_exchanges_instances(apps, schema_editor):
         Exchange.objects.create(
             name=exchange,
             is_active=is_active
-
         )
+
 
 class Migration(migrations.Migration):
 

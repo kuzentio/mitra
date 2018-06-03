@@ -9,6 +9,7 @@ import django.db.models.deletion
 def import_current_rates(apps, schema_editor):
     call_command('import_bittrex_rates')
 
+
 class Migration(migrations.Migration):
 
     initial = True
