@@ -5,7 +5,7 @@ from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 from apps.order.factories import OrderFactory
 from apps.order.models import Order
 from apps.order.utils import aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity, \
-    get_avg_price
+    get_avg_price, get_avg_open_price_matched_orders
 from apps.profile_app.factories import AccountFactory
 
 
@@ -171,3 +171,25 @@ class TestPNLUtils(TestCase):
         )
         avg_price_buy = get_avg_price(Order.objects.all(), type=ORDER_TYPE_BUY)
         self.assertEqual(avg_price_buy, (Decimal('20.0'), self.order_quantity * 2))
+
+    def test_get_avg_open_price_matched_orders(self):
+        for i in range(0, 4):
+            OrderFactory.create(
+                type=ORDER_TYPE_BUY,
+                account=self.account,
+                pair='BTC-MANA',
+                quantity=Decimal('10.0'),
+                commission=self.order_commission,
+                price=Decimal('9.0'),
+            )
+        for i in range(0, 2):
+            OrderFactory.create(
+                type=ORDER_TYPE_SELL,
+                account=self.account,
+                pair='BTC-MANA',
+                quantity=Decimal('15.0'),
+                commission=self.order_commission,
+                price=Decimal('15.0'),
+            )
+        payload = get_avg_open_price_matched_orders(Order.objects.all())
+        import pdb;pdb.set_trace()

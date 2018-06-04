@@ -2,12 +2,13 @@ from .base import *  # noqa
 
 AUTH_PASSWORD_VALIDATORS = []
 
+# SECRET_KEY = 'SDFSDFD'
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'mitra',
-        'USER': 'ihor',
+        'USER': 'igor',
         'PASSWORD': '',
         'HOST': 'localhost',
     }

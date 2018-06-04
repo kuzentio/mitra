@@ -79,6 +79,12 @@ def aggregate_orders_by_types(queryset):
 
 
 def get_avg_price(queryset, type):
+    """
+    https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
+    :param queryset:
+    :param type: ORDER_TYPE_BUY/ORDER_TYPE_SELL
+    :return: tuple(price(Decimal), quantity(Decimal))
+    """
     qs = queryset.filter(type=type).all()
     avg_sell_price = qs.annotate(total=(F('quantity') * F('price'))).aggregate(
         Sum('total'),
@@ -92,11 +98,28 @@ def get_avg_price(queryset, type):
     return round(price, 8), avg_sell_price['quantity__sum']
 
 
+def get_avg_open_price_matched_orders(queryset):
+    _result = []
+    total_sell = Decimal('0')
+
+    sell_quantity = queryset.all().filter(type=ORDER_TYPE_SELL).aggregate(quantity=Sum('quantity'))['quantity']
+    # for order in queryset.filter(type=ORDER_TYPE_BUY).order_by('-closed_at').all():  # TODO: <-- (!)
+    #     _result.append((order.quantity, order.price))
+    
+    return total_sell
 
 
 def get_orders_pnl(queryset):
-    buy_price, buy_quantity = get_avg_price(queryset, ORDER_TYPE_BUY)
-    sell_price, sell_quantity = get_avg_price(queryset, ORDER_TYPE_SELL)
+    """
+    https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
+    :param queryset: Order
+    :return:
+    """
+    buy_price, buy_quantity = get_avg_price(queryset.all(), ORDER_TYPE_BUY)
+    sell_price, sell_quantity = get_avg_price(queryset.all(), ORDER_TYPE_SELL)
 
-    pnl_realised_points = (sell_price - buy_price) * (sell_quantity - buy_quantity)
+    pnl_realized_points = (sell_price - buy_price) * sell_quantity
+    points = buy_quantity - sell_quantity  # If `points` > 0 - it means BUY > SELL TODO: check description <-
+    avg_open_price = get_avg_open_price_matched_orders(queryset.all())
+    pnl_unrealized_points = ''
     pass
