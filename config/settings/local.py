@@ -37,9 +37,9 @@ REST_FRAMEWORK = {
 }
 
 SHELL_PLUS_POST_IMPORTS = (
-    ('order.factories', '*'),
-    ('profile_app.factories', '*'),
-    ('order.tasks', '*')
+    ('apps.order.factories', '*'),
+    ('apps.profile_app.factories', '*'),
+    ('apps.order.tasks', '*')
 )
 
 USE_TZ = False
@@ -51,3 +51,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_RESULT_BACKEND = 'django-db'
+
+
+MITRA_DUMMY_BITTREX_API_KEY = '992ba48612564b72af9757afdf444121'  # TODO: required
+MITRA_DUMMY_BITTREX_API_SECRET = 'a9eb1d61422b4b8a9253e20949be66d5'  # TODO: required

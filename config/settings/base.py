@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
 
-    'profile_app',
-    'order',
-    'dashboard',
+    'apps.profile_app',
+    'apps.order',
+    'apps.dashboard',
 
-    'api',
+    'apps.api',
+    'apps.rates',
 ]
 
 MIDDLEWARE = [
