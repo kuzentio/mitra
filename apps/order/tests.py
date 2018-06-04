@@ -4,7 +4,8 @@ from django.test import TestCase
 from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 from apps.order.factories import OrderFactory
 from apps.order.models import Order
-from apps.order.utils import aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity
+from apps.order.utils import aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity, \
+    get_avg_price
 from apps.profile_app.factories import AccountFactory
 
 
@@ -119,3 +120,54 @@ class TestOrderUtils(TestCase):
         self.assertIsInstance(payload, tuple)
         self.assertEqual(len(payload), 2)
         self.assertEqual(payload, (ORDER_TYPE_BUY, expected_not_matched_amount))
+
+
+class TestPNLUtils(TestCase):
+    def setUp(self):
+        self.account = AccountFactory()
+        self.order_quantity = Decimal('1.0')
+        self.order_commission = Decimal('0.5')
+        self.order_price = Decimal('10.0')
+
+    def test_get_avg_price_by_buy(self):
+        for i in range(0, 4):
+            OrderFactory.create(
+                type=ORDER_TYPE_BUY,
+                account=self.account,
+                pair='BTC-MANA',
+                quantity=self.order_quantity,
+                commission=self.order_commission,
+                price=self.order_price,
+            )
+        avg_price_buy = get_avg_price(Order.objects.all(), type=ORDER_TYPE_BUY)
+        avg_price_sell = get_avg_price(Order.objects.all(), type=ORDER_TYPE_SELL)
+
+        self.assertEqual(avg_price_buy, (self.order_price, self.order_quantity * 4))
+        self.assertEqual(avg_price_sell, (Decimal('0'), Decimal('0')))
+
+    def test_get_avg_price_without_orders(self):
+        avg_price_buy = get_avg_price(Order.objects.all(), type=ORDER_TYPE_BUY)
+        avg_price_sell = get_avg_price(Order.objects.all(), type=ORDER_TYPE_SELL)
+
+        self.assertEqual(avg_price_buy, (Decimal('0'), Decimal('0')))
+        self.assertEqual(avg_price_sell, (Decimal('0'), Decimal('0')))
+
+    def test_get_avg_price_with_different_price(self):
+        OrderFactory.create(
+            type=ORDER_TYPE_BUY,
+            account=self.account,
+            pair='BTC-MANA',
+            quantity=self.order_quantity,
+            commission=self.order_commission,
+            price=Decimal('10.0'),
+        )
+        OrderFactory.create(
+            type=ORDER_TYPE_BUY,
+            account=self.account,
+            pair='BTC-MANA',
+            quantity=self.order_quantity,
+            commission=self.order_commission,
+            price=Decimal('30.0'),
+        )
+        avg_price_buy = get_avg_price(Order.objects.all(), type=ORDER_TYPE_BUY)
+        self.assertEqual(avg_price_buy, (Decimal('20.0'), self.order_quantity * 2))

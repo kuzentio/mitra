@@ -76,3 +76,27 @@ def aggregate_orders_by_types(queryset):
     aggregations['revenue'] = round(total_sell - total_buy, 8)
 
     return aggregations
+
+
+def get_avg_price(queryset, type):
+    qs = queryset.filter(type=type).all()
+    avg_sell_price = qs.annotate(total=(F('quantity') * F('price'))).aggregate(
+        Sum('total'),
+        Sum('quantity'),
+    )
+    if avg_sell_price['quantity__sum'] is None:
+        return Decimal('0'), Decimal('0')
+
+    price = avg_sell_price['total__sum'] / avg_sell_price['quantity__sum']
+
+    return round(price, 8), avg_sell_price['quantity__sum']
+
+
+
+
+def get_orders_pnl(queryset):
+    buy_price, buy_quantity = get_avg_price(queryset, ORDER_TYPE_BUY)
+    sell_price, sell_quantity = get_avg_price(queryset, ORDER_TYPE_SELL)
+
+    pnl_realised_points = (sell_price - buy_price) * (sell_quantity - buy_quantity)
+    pass
