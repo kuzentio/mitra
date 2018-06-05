@@ -81,7 +81,7 @@ def aggregate_orders_by_types(queryset):
 def get_avg_price(queryset, type):
     """
     https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
-    :param queryset:
+    :param queryset: Order
     :param type: ORDER_TYPE_BUY/ORDER_TYPE_SELL
     :return: tuple(price(Decimal), quantity(Decimal))
     """
@@ -99,6 +99,13 @@ def get_avg_price(queryset, type):
 
 
 def get_avg_open_price_matched_orders(queryset):
+    """
+    https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
+    :param queryset: Order
+    :return: Average buy price for matched orders, it returns 0.0 in case Orders contains many currencies.
+    """
+    if len(queryset.values_list('pair', flat=True).distinct()) > 1:  # TODO: not implemented
+        return Decimal('0.0')
     order_id = []
     _counter_quantity = Decimal('0.0')
     total_sell_quantity = queryset.all().filter(
