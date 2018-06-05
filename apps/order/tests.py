@@ -173,6 +173,7 @@ class TestPNLUtils(TestCase):
         self.assertEqual(avg_price_buy, (Decimal('20.0'), self.order_quantity * 2))
 
     def test_get_avg_open_price_matched_orders(self):
+        BUY_PRICE = Decimal('9.0')
         for i in range(0, 4):
             OrderFactory.create(
                 type=ORDER_TYPE_BUY,
@@ -180,7 +181,7 @@ class TestPNLUtils(TestCase):
                 pair='BTC-MANA',
                 quantity=Decimal('10.0'),
                 commission=self.order_commission,
-                price=Decimal('9.0'),
+                price=BUY_PRICE,
             )
         for i in range(0, 2):
             OrderFactory.create(
@@ -191,5 +192,52 @@ class TestPNLUtils(TestCase):
                 commission=self.order_commission,
                 price=Decimal('15.0'),
             )
-        payload = get_avg_open_price_matched_orders(Order.objects.all())
-        import pdb;pdb.set_trace()
+        avg_price = get_avg_open_price_matched_orders(Order.objects.all())
+        self.assertEqual(avg_price, BUY_PRICE)
+
+    def test_get_average_price_with_different_buy_prices(self):
+        PRICE_1 = Decimal('10.0')
+        PRICE_2 = Decimal('12.0')
+        OrderFactory.create(
+            type=ORDER_TYPE_BUY,
+            account=self.account,
+            pair='BTC-MANA',
+            quantity=Decimal('10.0'),
+            commission=self.order_commission,
+            price=PRICE_1,
+        )
+        OrderFactory.create(
+            type=ORDER_TYPE_BUY,
+            account=self.account,
+            pair='BTC-MANA',
+            quantity=Decimal('10.0'),
+            commission=self.order_commission,
+            price=PRICE_2,
+        )
+        OrderFactory.create(
+            type=ORDER_TYPE_SELL,
+            account=self.account,
+            pair='BTC-MANA',
+            quantity=Decimal('20.0'),
+            commission=self.order_commission,
+            price=PRICE_2 + Decimal('1.0'),
+        )
+        avg_price = get_avg_open_price_matched_orders(Order.objects.all())
+        self.assertEqual(avg_price, Decimal('11.00'))
+
+    def test_get_average_price_returns_zero_if_orders_are_not_matched(self):
+        for i in range(0, 5):
+            OrderFactory.create(
+                type=ORDER_TYPE_BUY,
+                account=self.account,
+                pair='BTC-MANA',
+                quantity=Decimal('20.0'),
+                commission=self.order_commission,
+                price=Decimal('15.0'),
+            )
+        avg_price = get_avg_open_price_matched_orders(Order.objects.all())
+        self.assertEqual(avg_price, Decimal('0.0'))
+
+        Order.objects.all().update(type=ORDER_TYPE_SELL)
+        avg_price = get_avg_open_price_matched_orders(Order.objects.all())
+        self.assertEqual(avg_price, Decimal('0.0'))
