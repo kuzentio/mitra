@@ -99,14 +99,30 @@ def get_avg_price(queryset, type):
 
 
 def get_avg_open_price_matched_orders(queryset):
-    _result = []
+    # _result = []
     total_sell = Decimal('0')
 
-    sell_quantity = queryset.all().filter(type=ORDER_TYPE_SELL).aggregate(quantity=Sum('quantity'))['quantity']
-    # for order in queryset.filter(type=ORDER_TYPE_BUY).order_by('-closed_at').all():  # TODO: <-- (!)
-    #     _result.append((order.quantity, order.price))
-    
-    return total_sell
+    # sell_quantity = queryset.all().filter(type=ORDER_TYPE_SELL).aggregate(quantity=Sum('quantity'))['quantity']
+    # for order in queryset.filter(type=ORDER_TYPE_BUY).all():  # TODO: <-- (!)
+    #     sell_quantity -= order.quantity
+    #     _result.append((order.price, order.quantity))
+    #     # print(sell_quantity)
+    #     if sell_quantity <= Decimal('0'):
+    #         break
+    # print(_result)
+    # import pdb;pdb.set_trace()
+    order_id = []
+    _counter_quantity = Decimal('0.0')
+    total_sell_quantity = queryset.all().filter(type=ORDER_TYPE_SELL).aggregate(quantity=Sum('quantity'))['quantity']
+    for order in queryset.all():
+        _counter_quantity += order.quantity
+        if total_sell_quantity >= _counter_quantity:
+            order_id.append(order.id)
+        else:
+            break
+    avg_price = get_avg_price(queryset.filter(id__in=order_id), ORDER_TYPE_BUY)
+
+    return avg_price
 
 
 def get_orders_pnl(queryset):
