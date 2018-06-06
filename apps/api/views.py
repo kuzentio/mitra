@@ -55,5 +55,8 @@ class APIOrderView(generics.ListAPIView):
 
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(APIOrderView, self).finalize_response(request, response)
+
+        pnl = utils.get_orders_pnl(self.get_queryset())
+        response.data.update(pnl)
         response.data.update(self.get_aggregations())
         return response

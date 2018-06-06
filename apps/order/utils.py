@@ -106,20 +106,20 @@ def get_avg_open_price_matched_orders(queryset):
     """
     if len(queryset.values_list('pair', flat=True).distinct()) > 1:  # TODO: not implemented
         return Decimal('0.0')
-    order_id = []
+    order_ids = []
     _counter_quantity = Decimal('0.0')
     total_sell_quantity = queryset.all().filter(
         type=ORDER_TYPE_SELL
     ).aggregate(
         quantity=Sum('quantity')
     )['quantity'] or Decimal('0.0')
-    for order in queryset.all():
-        _counter_quantity += order.quantity
+    for order_id, order_quantity in queryset.select_related().values_list('id', 'quantity').iterator():
+        _counter_quantity += order_quantity
         if total_sell_quantity >= _counter_quantity:
-            order_id.append(order.id)
+            order_ids.append(order_id)
         else:
             break
-    avg_price = get_avg_price(queryset.filter(id__in=order_id), ORDER_TYPE_BUY)
+    avg_price = get_avg_price(queryset.filter(id__in=order_ids), ORDER_TYPE_BUY)
 
     return avg_price[0]
 
@@ -130,11 +130,22 @@ def get_orders_pnl(queryset):
     :param queryset: Order
     :return:
     """
+    result = {
+        'pnl_total': Decimal('0.0'),
+        'pnl_realized': Decimal('0.0'),
+        'pnl_unrealized': Decimal('0.0'),
+    }
+    if len(queryset.values_list('pair', flat=True).distinct()) > 1:
+        return result
+
     buy_price, buy_quantity = get_avg_price(queryset.all(), ORDER_TYPE_BUY)
     sell_price, sell_quantity = get_avg_price(queryset.all(), ORDER_TYPE_SELL)
 
-    pnl_realized_points = (sell_price - buy_price) * sell_quantity
+    result['pnl_realized'] = (sell_price - buy_price) * sell_quantity
     points = buy_quantity - sell_quantity  # If `points` > 0 - it means BUY > SELL TODO: check description <-
     avg_open_price = get_avg_open_price_matched_orders(queryset.all())
-    pnl_unrealized_points = ''
-    pass
+    last_sell_price = queryset.filter(type=ORDER_TYPE_SELL).order_by('closed_at').last().price
+    result['pnl_unrealized'] = (last_sell_price - avg_open_price) * points
+    result['pnl_total'] = result['pnl_realized'] + result['pnl_unrealized']
+
+    return result

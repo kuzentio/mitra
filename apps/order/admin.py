@@ -4,7 +4,7 @@ from apps.order.models import Order, Exchange
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'uuid', 'pair', 'type', 'closed_at', 'opened_at']
+    list_display = ['id', 'uuid', 'pair', 'type', 'price', 'quantity', 'closed_at', 'opened_at']
     search_fields = ['pair']
 
 

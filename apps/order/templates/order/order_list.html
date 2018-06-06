@@ -38,21 +38,21 @@
     </div>
 
     <hr/>
-    <p>Summary:</p>
+    <p>P&L:</p>
     <div class="col-md-4">
         <table class="table">
             <tbody>
                 <tr>
-                    <th>Total BUY:</th>
-                    <td id="id-total-buy">0</td>
+                    <th>P&L Total:</th>
+                    <td id="id-pnl-total"></td>
                 </tr>
                 <tr>
-                    <th>Total SELL:</th>
-                    <td id="id-total-sell">0</td>
+                    <th>P&L Realized:</th>
+                    <td id="id-pnl-realized"></td>
                 </tr>
                 <tr>
-                    <th>Revenue:</th>
-                    <td id="id-total-revenue">0</td>
+                    <th>P&L Unrealized:</th>
+                    <td id="id-pnl-unrealized"></td>
                 </tr>
             </tbody>
         </table>
@@ -69,7 +69,6 @@
                 <th>Commission</th>
                 <th>Price</th>
                 <th>Closed</th>
-                <th>USD</th>
             </tr>
         </thead>
         <tbody>
@@ -84,7 +83,6 @@
                 <th>Commission</th>
                 <th>Price</th>
                 <th>Closed</th>
-                <th>USD</th>
             </tr>
         </tfoot>
     </table>
@@ -102,10 +100,8 @@
             for (var i in parameters) {
                 url = updateURLParameter(url, parameters[i]['name'], parameters[i]['value'])
             }
-
             table.ajax.url(url).load();
             table.draw();
-
         });
 
         function init_pairs(pairs){
@@ -151,12 +147,12 @@
             "ajax": {
                 url:"{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
                 dataSrc: function(json) {
+                    console.log(json);
                     var _pairs = json.pairs;
                     if (typeof _pairs !== 'undefined' && _pairs.length === 1){
-                        $('#id-total-buy').html(json.BUY);
-                        $('#id-total-sell').html(json.SELL);
-                        $('#id-total-revenue').html(json.revenue);
-                        console.log(_pairs);
+                        $('#id-pnl-total').html(json.pnl_total);
+                        $('#id-pnl-realized').html(json.pnl_realized);
+                        $('#id-pnl-unrealized').html(json.pnl_unrealized);
                         init_pairs(_pairs);
                         $('#id_pair').val(_pairs);
                     }
@@ -178,7 +174,6 @@
                 {"data": "commission", "searchable": true},
                 {"data": "price", "searchable": true},
                 {"data": "closed_at", "searchable": true},
-                {"data": "usd_price", "searchable": true}
             ]
         });
 

@@ -25,13 +25,13 @@ class Order(models.Model):
     pair = models.CharField(max_length=20)
 
     quantity = models.DecimalField(blank=True, null=True, decimal_places=8, max_digits=12)
-    commission = models.DecimalField(blank=True, null=True, decimal_places=8, max_digits=10)
-    price = models.DecimalField(blank=True, null=True, decimal_places=8, max_digits=10)
+    commission = models.DecimalField(blank=True, null=True, decimal_places=8, max_digits=12)
+    price = models.DecimalField(blank=True, null=True, decimal_places=8, max_digits=12)
 
     opened_at = models.DateTimeField(blank=True, null=True)
     closed_at = models.DateTimeField(blank=True, null=True)
 
-    data = JSONField(default={})
+    data = JSONField(default=dict, blank=True, null=True)
 
     class Meta:
         indexes = [
