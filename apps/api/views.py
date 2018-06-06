@@ -46,17 +46,12 @@ class APIOrderView(generics.ListAPIView):
 
         return qs.filter(**extra_query).annotate(usd_price=self.usd_subquery)
 
-    def get_aggregations(self):
-        aggregations = utils.aggregate_orders_by_types(
-            self.get_queryset()
-        )
-
-        return aggregations
-
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(APIOrderView, self).finalize_response(request, response)
 
-        pnl = utils.get_orders_pnl(self.get_queryset())
+        pnl = utils.get_orders_pnl(self.get_queryset().all())
         response.data.update(pnl)
-        response.data.update(self.get_aggregations())
+        response.data.update(
+            {'pairs': list(self.get_queryset().all().values_list('pair', flat=True).distinct())}
+        )
         return response

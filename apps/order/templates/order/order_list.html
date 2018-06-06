@@ -147,7 +147,6 @@
             "ajax": {
                 url:"{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
                 dataSrc: function(json) {
-                    console.log(json);
                     var _pairs = json.pairs;
                     if (typeof _pairs !== 'undefined' && _pairs.length === 1){
                         $('#id-pnl-total').html(json.pnl_total);
@@ -157,10 +156,10 @@
                         $('#id_pair').val(_pairs);
                     }
                     if (typeof  _pairs !== 'undefined' && _pairs.length > 1 || _pairs.length === 0) {
+                        $('#id-pnl-total').html(0);
+                        $('#id-pnl-realized').html(0);
+                        $('#id-pnl-unrealized').html(0);
                         init_pairs(_pairs);
-                        $('#id-total-buy').html(0);
-                        $('#id-total-sell').html(0);
-                        $('#id-total-revenue').html(0);
                     }
                     return json.data;
                 }
