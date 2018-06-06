@@ -12,6 +12,11 @@ DATABASES = {
     }
 }
 
+MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+INTERNAL_IPS = ['localhost', '127.0.0.1']
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
@@ -21,6 +26,7 @@ STATIC_URL = '/static/'
 
 INSTALLED_APPS += (
     'django_extensions',
+    'debug_toolbar',
 )
 
 REST_FRAMEWORK = {
@@ -85,13 +91,4 @@ BOOTSTRAP4 = {
     },
 }
 
-#  EXAMPLE
-# BOOTSTRAP3 = {
-#     'include_jquery': False,
-#     'jquery_url': '/static/jquery.min.js',
-#     'base_url': '/static/bootstrap/',
-#     'css_url': '/static/bootstrap/css/bootstrap.min.css',
-#     'theme_url': '/static/bootstrap/css/bootstrap-theme.min.css',
-#     'javascript_url': '/static/bootstrap/js/bootstrap.min.js',
-# }
 BOOTSTRAP_BASE_URL = '/static/bootstrap/'

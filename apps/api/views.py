@@ -1,21 +1,16 @@
 from datetime import datetime
 
-from django.db.models import Subquery, OuterRef
 from rest_framework import generics
 
 from apps.api.serializers import OrderSerializer
 from apps.order import utils
 from apps.order import constance
 from apps.order.models import Order
-from apps.rates.models import BTCRate
 
 
 class APIOrderView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    usd_subquery = Subquery(
-        BTCRate.objects.filter(datetime__lte=OuterRef('closed_at')).order_by('-datetime').values('close')[:1]
-    )
 
     def get_queryset(self):
         extra_query = {}
@@ -44,7 +39,7 @@ class APIOrderView(generics.ListAPIView):
         if exchange is not None:
             extra_query['exchange__name'] = exchange
 
-        return qs.filter(**extra_query).annotate(usd_price=self.usd_subquery)
+        return qs.filter(**extra_query)
 
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(APIOrderView, self).finalize_response(request, response)
