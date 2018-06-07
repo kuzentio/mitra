@@ -61,15 +61,10 @@ MITRA_DUMMY_BITTREX_API_KEY = '992ba48612564b72af9757afdf444121'  # TODO: requir
 MITRA_DUMMY_BITTREX_API_SECRET = 'a9eb1d61422b4b8a9253e20949be66d5'  # TODO: required
 
 BOOTSTRAP4 = {
-    # 'jquery_url': '//code.jquery.com/jquery.min.js',
     'jquery_url': STATIC_URL + 'jquery/dist/jquery.js',
-    # 'base_url': '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/',
     'base_url': STATIC_URL + 'bootstrap/',
-    # 'css_url': None,
     'css_url': STATIC_URL + 'bootstrap/dist/css/bootstrap.css',
     'theme_url': None,
-    # 'theme_url': STATIC_URL + 'bootstrap/dist/css/bootstrap-theme.css',
-    # 'javascript_url': None,
     'javascript_url': STATIC_URL + 'bootstrap/dist/js/bootstrap.js',
     'javascript_in_head': False,
     'include_jquery': False,

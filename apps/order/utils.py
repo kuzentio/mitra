@@ -134,6 +134,7 @@ def get_orders_pnl(queryset):
         'pnl_total': Decimal('0.0'),
         'pnl_realized': Decimal('0.0'),
         'pnl_unrealized': Decimal('0.0'),
+        'total_commission': queryset.all().aggregate(Sum('commission'))['commission__sum']
     }
     if len(queryset.values_list('pair', flat=True).distinct()) > 1:
         return result
@@ -142,10 +143,14 @@ def get_orders_pnl(queryset):
     sell_price, sell_quantity = get_avg_price(queryset.all(), ORDER_TYPE_SELL)
 
     result['pnl_realized'] = (sell_price - buy_price) * sell_quantity
-    points = buy_quantity - sell_quantity  # If `points` > 0 - it means BUY > SELL TODO: check description <-
+    points = buy_quantity - sell_quantity
     avg_open_price = get_avg_open_price_matched_orders(queryset.all())
-    last_sell_price = queryset.filter(type=ORDER_TYPE_SELL).order_by('closed_at').last().price
+    if queryset.filter(type=ORDER_TYPE_SELL).exists():
+        last_sell_price = queryset.filter(type=ORDER_TYPE_SELL).order_by('closed_at').last().price
+    else:
+        last_sell_price = Decimal('0.0')
     result['pnl_unrealized'] = (last_sell_price - avg_open_price) * points
     result['pnl_total'] = result['pnl_realized'] + result['pnl_unrealized']
+    result['revenue'] = result['pnl_total'] - result['total_commission']
 
     return result

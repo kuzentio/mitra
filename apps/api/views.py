@@ -43,9 +43,10 @@ class APIOrderView(generics.ListAPIView):
 
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(APIOrderView, self).finalize_response(request, response)
+        if self.get_queryset().exists():
 
-        pnl = utils.get_orders_pnl(self.get_queryset().all())
-        response.data.update(pnl)
+            pnl = utils.get_orders_pnl(self.get_queryset().all())
+            response.data.update(pnl)
         response.data.update(
             {'pairs': list(self.get_queryset().all().values_list('pair', flat=True).distinct())}
         )
