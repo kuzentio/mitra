@@ -76,3 +76,81 @@ def aggregate_orders_by_types(queryset):
     aggregations['revenue'] = round(total_sell - total_buy, 8)
 
     return aggregations
+
+
+def get_avg_price(queryset, type):
+    """
+    https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
+    :param queryset: Order
+    :param type: ORDER_TYPE_BUY/ORDER_TYPE_SELL
+    :return: tuple(price(Decimal), quantity(Decimal))
+    """
+    qs = queryset.filter(type=type).all()
+    avg_sell_price = qs.annotate(total=(F('quantity') * F('price'))).aggregate(
+        Sum('total'),
+        Sum('quantity'),
+    )
+    if avg_sell_price['quantity__sum'] is None:
+        return Decimal('0'), Decimal('0')
+
+    price = avg_sell_price['total__sum'] / avg_sell_price['quantity__sum']
+
+    return round(price, 8), avg_sell_price['quantity__sum']
+
+
+def get_avg_open_price_matched_orders(queryset):
+    """
+    https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
+    :param queryset: Order
+    :return: Average buy price for matched orders, it returns 0.0 in case Orders contains many currencies.
+    """
+    if len(queryset.values_list('pair', flat=True).distinct()) > 1:  # TODO: not implemented
+        return Decimal('0.0')
+    order_ids = []
+    _counter_quantity = Decimal('0.0')
+    total_sell_quantity = queryset.all().filter(
+        type=ORDER_TYPE_SELL
+    ).aggregate(
+        quantity=Sum('quantity')
+    )['quantity'] or Decimal('0.0')
+    for order_id, order_quantity in queryset.select_related().values_list('id', 'quantity').iterator():
+        _counter_quantity += order_quantity
+        if total_sell_quantity >= _counter_quantity:
+            order_ids.append(order_id)
+        else:
+            break
+    avg_price = get_avg_price(queryset.filter(id__in=order_ids), ORDER_TYPE_BUY)
+
+    return avg_price[0]
+
+
+def get_orders_pnl(queryset):
+    """
+    https://www.tradingtechnologies.com/help/fix-adapter-reference/pl-calculation-algorithm/understanding-pl-calculations/
+    :param queryset: Order
+    :return:
+    """
+    result = {
+        'pnl_total': Decimal('0.0'),
+        'pnl_realized': Decimal('0.0'),
+        'pnl_unrealized': Decimal('0.0'),
+        'total_commission': queryset.all().aggregate(Sum('commission'))['commission__sum']
+    }
+    if len(queryset.values_list('pair', flat=True).distinct()) > 1:
+        return result
+
+    buy_price, buy_quantity = get_avg_price(queryset.all(), ORDER_TYPE_BUY)
+    sell_price, sell_quantity = get_avg_price(queryset.all(), ORDER_TYPE_SELL)
+
+    result['pnl_realized'] = (sell_price - buy_price) * sell_quantity
+    points = buy_quantity - sell_quantity
+    avg_open_price = get_avg_open_price_matched_orders(queryset.all())
+    if queryset.filter(type=ORDER_TYPE_SELL).exists():
+        last_sell_price = queryset.filter(type=ORDER_TYPE_SELL).order_by('closed_at').last().price
+    else:
+        last_sell_price = Decimal('0.0')
+    result['pnl_unrealized'] = (last_sell_price - avg_open_price) * points
+    result['pnl_total'] = result['pnl_realized'] + result['pnl_unrealized']
+    result['revenue'] = result['pnl_total'] - result['total_commission']
+
+    return result

@@ -4,7 +4,9 @@ from django.test import TestCase
 from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 from apps.order.factories import OrderFactory
 from apps.order.models import Order
-from apps.order.utils import aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity
+from apps.order.utils import (
+    aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity
+)
 from apps.profile_app.factories import AccountFactory
 
 
