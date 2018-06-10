@@ -20,6 +20,10 @@ class APIOrderView(generics.ListAPIView):
             constance.DEFAULT_MAX_DATE,
         ]
 
+        if self.request.query_params.get('pair') == 'All':
+            self.request.GET._mutable = True
+            self.request.query_params.pop('pair')
+
         if self.request.query_params.get('min_date'):
             min_date = datetime.strptime(
                 self.request.query_params.get('min_date'), '%d.%m.%Y'
@@ -44,7 +48,6 @@ class APIOrderView(generics.ListAPIView):
     def finalize_response(self, request, response, *args, **kwargs):
         response = super(APIOrderView, self).finalize_response(request, response)
         if self.get_queryset().exists():
-
             pnl = utils.get_orders_pnl(self.get_queryset().all())
             response.data.update(pnl)
         response.data.update(
