@@ -2,6 +2,7 @@ from decimal import Decimal
 from django.db.models import Sum, F, Avg
 
 from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
+from apps.order.models import Price
 
 
 def get_amount_from_avg_order(queryset, _type, _quantity):
@@ -146,10 +147,14 @@ def get_orders_pnl(queryset):
     points = buy_quantity - sell_quantity
     avg_open_price = get_avg_open_price_matched_orders(queryset.all())
     if queryset.filter(type=ORDER_TYPE_SELL).exists():
-        last_sell_price = queryset.filter(type=ORDER_TYPE_SELL).order_by('closed_at').last().price
+        pair = queryset.values_list('pair', flat=True).distinct()
+        try:
+            theoretical_sell_price = Price.objects.get(pair=pair[0]).ask
+        except (Price.MultipleObjectsReturned, Price.DoesNotExist, AttributeError):
+            theoretical_sell_price = Decimal('0.0')
     else:
-        last_sell_price = Decimal('0.0')
-    result['pnl_unrealized'] = (last_sell_price - avg_open_price) * points
+        theoretical_sell_price = Decimal('0.0')
+    result['pnl_unrealized'] = (theoretical_sell_price - avg_open_price) * points
     result['pnl_total'] = result['pnl_realized'] + result['pnl_unrealized']
     result['revenue'] = result['pnl_total'] - result['total_commission']
 
