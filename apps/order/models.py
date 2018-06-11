@@ -37,3 +37,13 @@ class Order(models.Model):
         indexes = [
             models.Index(fields=['uuid', ])
         ]
+
+
+class Price(models.Model):
+    pair = models.CharField(max_length=10, unique=True)
+    ask = models.DecimalField(decimal_places=8, max_digits=12)
+    timestamp = models.DateTimeField(blank=True, null=True)
+    data = JSONField(blank=True, null=True)
+
+    def __str__(self):
+        return '{0}: {1}'.format(self.pair, self.ask)
