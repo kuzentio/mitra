@@ -4,7 +4,7 @@ from dateutil.tz import datetime
 from factory.fuzzy import FuzzyDecimal, FuzzyChoice
 
 from apps.order import constance
-from apps.order.models import Exchange, Order
+from apps.order.models import Exchange, Order, Price
 
 
 class ExchangeFactory(factory.DjangoModelFactory):
@@ -35,4 +35,14 @@ class OrderFactory(factory.DjangoModelFactory):
     opened_at = factory.LazyFunction(datetime.datetime.now)
     closed_at = factory.LazyFunction(datetime.datetime.now)
 
+    data = "{}"
+
+
+class PriceFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Price
+        django_get_or_create = ('pair', )
+    pair = 'BTC-ETH'
+    ask = FuzzyDecimal(0.025, 2.25)
+    timestamp = factory.LazyFunction(datetime.datetime.now)
     data = "{}"

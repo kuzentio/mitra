@@ -2,11 +2,11 @@ from decimal import Decimal
 from django.test import TestCase
 
 from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
-from apps.order.factories import OrderFactory
-from apps.order.models import Order
+from apps.order.factories import OrderFactory, PriceFactory
+from apps.order.models import Order, Price
 from apps.order.utils import (
-    aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity
-)
+    aggregate_orders_by_types, get_amount_from_avg_order, get_not_matched_quantity,
+    get_orders_pnl)
 from apps.profile_app.factories import AccountFactory
 
 
@@ -121,3 +121,38 @@ class TestOrderUtils(TestCase):
         self.assertIsInstance(payload, tuple)
         self.assertEqual(len(payload), 2)
         self.assertEqual(payload, (ORDER_TYPE_BUY, expected_not_matched_amount))
+
+
+class TestPrice(TestCase):
+    def setUp(self):
+        self.buy_quantity = Decimal('10')
+        self.buy_price = Decimal('5')
+        self.buy_order = OrderFactory.create(
+            type=ORDER_TYPE_BUY,
+            quantity=self.buy_quantity,
+            price=self.buy_price,
+        )
+        self. sell_order = OrderFactory.create(
+            type=ORDER_TYPE_SELL,
+            quantity=self.buy_quantity - Decimal('5'),
+            price=self.buy_price + Decimal('1')
+        )
+
+    def test_unrealized_pnl_with_same_price(self):
+        PriceFactory.create(
+            ask=Decimal('5'),
+        )
+        result = get_orders_pnl(Order.objects.all())
+        self.assertEqual(result['pnl_unrealized'], Decimal('5') * Decimal('5'))
+
+    def test_unrealized_pnl_includes_last_price_change(self):
+        PriceFactory.create(
+            ask=Decimal('5')
+        )
+        result = get_orders_pnl(Order.objects.all())
+        self.assertEqual(result['pnl_unrealized'], Decimal('5') * Decimal('5'))
+        price = Price.objects.last()
+        price.ask = Decimal('7')
+        price.save()
+        result = get_orders_pnl(Order.objects.all())
+        self.assertEqual(result['pnl_unrealized'], Decimal('7') * Decimal('5'))

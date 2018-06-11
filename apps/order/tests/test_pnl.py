@@ -5,7 +5,7 @@ from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 from apps.order.factories import OrderFactory
 from apps.order.models import Order
 from apps.order.utils import (
-    get_avg_price, get_avg_open_price_matched_orders
+    get_avg_price, get_avg_open_price_matched_orders,
 )
 from apps.profile_app.factories import AccountFactory
 
@@ -131,15 +131,13 @@ class TestPNLUtils(TestCase):
         self.assertEqual(avg_price, Decimal('0.0'))
 
     def test_get_average_price_returns_zero_if_passes_many_pairs(self):
-        for i in range(0, 6):
-            OrderFactory.create(
-                account=self.account,
-                pair='BTC-MANA',
-            )
-        for i in range(0, 6):
-            OrderFactory.create(
-                account=self.account,
-                pair='BTC-ETH',
-            )
+        OrderFactory.create(
+            account=self.account,
+            pair='BTC-MANA',
+        )
+        OrderFactory.create(
+            account=self.account,
+            pair='BTC-ETH',
+        )
         avg_price = get_avg_open_price_matched_orders(Order.objects.all())
         self.assertEqual(avg_price, Decimal('0.0'))
