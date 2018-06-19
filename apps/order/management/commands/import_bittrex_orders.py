@@ -51,7 +51,7 @@ class Command(BaseCommand):
         email = options.get('email')
         if not email:
             raise CommandError(
-                "Please provide -account_email. See details --help"
+                "Please provide --account_email. See details --help"
             )
         account = Account.objects.filter(email=email, is_active=True)
         if not account.exists():
@@ -61,7 +61,7 @@ class Command(BaseCommand):
         account = account.get()
         if not all([account.api_key, account.api_secret]):
             raise CommandError(
-                "Wrong account, check that API_KEY and API_SECRET were provided."
+                "Wrong account, check that API_KEY and API_SECRET were provided for this account, and they correct."
             )
 
         bittrex = Bittrex(
