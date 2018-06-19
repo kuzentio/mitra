@@ -1,28 +1,27 @@
 {
-  "_from": "datatables.net-dt",
-  "_id": "datatables.net-dt@1.10.16",
+  "_from": "datatables.net-dt@^1.10.16",
+  "_id": "datatables.net-dt@1.10.18",
   "_inBundle": false,
-  "_integrity": "sha1-Z1ijCPueX5Yp+2VBzDAeSOyexVU=",
+  "_integrity": "sha512-fAH0Y4oSDz099FK50ZrAirz7Am4ccHsD686rjGYGmcUmgQdgGVa+VB3FMzUrTqWtREhw+alGvo8TD8XjtvEIKA==",
   "_location": "/datatables.net-dt",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "datatables.net-dt",
+    "raw": "datatables.net-dt@^1.10.16",
     "name": "datatables.net-dt",
     "escapedName": "datatables.net-dt",
-    "rawSpec": "",
+    "rawSpec": "^1.10.16",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^1.10.16"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/datatables.net-dt/-/datatables.net-dt-1.10.16.tgz",
-  "_shasum": "6758a308fb9e5f9629fb6541cc301e48ec9ec555",
-  "_spec": "datatables.net-dt",
-  "_where": "/Users/ihor/workspace/mitra",
+  "_resolved": "https://registry.npmjs.org/datatables.net-dt/-/datatables.net-dt-1.10.18.tgz",
+  "_shasum": "fa1bfa0867321dd92828d537eaa9aa712e3cb5fb",
+  "_spec": "datatables.net-dt@^1.10.16",
+  "_where": "/Users/igor/workspace/mitra",
   "author": {
     "name": "SpryMedia Ltd",
     "url": "http://datatables.net"
@@ -32,18 +31,14 @@
   },
   "bundleDependencies": false,
   "dependencies": {
-    "datatables.net": "1.10.16",
+    "datatables.net": "1.10.18",
     "jquery": ">=1.7"
   },
   "deprecated": false,
   "description": "DataTables for jQuery ",
   "files": [
-    "css/jquery.dataTables.css",
-    "images/sort_asc.png",
-    "images/sort_asc_disabled.png",
-    "images/sort_both.png",
-    "images/sort_desc.png",
-    "images/sort_desc_disabled.png"
+    "css/**/*.css",
+    "js/**/*.js"
   ],
   "homepage": "https://datatables.net",
   "keywords": [
@@ -55,11 +50,12 @@
     "DataTables"
   ],
   "license": "MIT",
+  "main": "js/dataTables.dataTables.js",
   "name": "datatables.net-dt",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DataTables/Dist-DataTables-DataTables.git"
   },
-  "style": "css/jquery.dataTables.css",
-  "version": "1.10.16"
+  "style": "css/dataTables.dataTables.css",
+  "version": "1.10.18"
 }
