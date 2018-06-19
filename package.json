@@ -1,0 +1,28 @@
+{
+  "name": "mitra",
+  "version": "1.0.0",
+  "description": "### How to run it locally",
+  "main": "index.js",
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "datatables.net": "^1.10.16",
+    "datatables.net-dt": "^1.10.16",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuzentio/mitra.git"
+  },
+  "keywords": [],
+  "author": "kuzentio <0585ec@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kuzentio/mitra/issues"
+  },
+  "homepage": "https://github.com/kuzentio/mitra#readme"
+}

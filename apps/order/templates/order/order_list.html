@@ -4,12 +4,12 @@
 {% load staticfiles %}
 
 {% block css_imports %}
-    <link rel="stylesheet" href="{% static 'datatables-dt/css/jquery.dataTables.css' %}">
+    <link rel="stylesheet" href="{% static 'datatables.net-dt/css/jquery.dataTables.css' %}">
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
 {% endblock %}
 {% block js_imports %}
-    <script src="{% static 'datatables/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'datatables.net/js/jquery.dataTables.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
     <script src="{% static 'order/js/utils.js' %}"></script>
 {% endblock %}
@@ -155,7 +155,6 @@
             "ajax": {
                 url:"{% url 'api:api_order_list' exchange_name=exchange_name %}?format=datatables",
                 dataSrc: function(json) {
-                    console.log(json);
                     var _pairs = json.pairs;
                     if (typeof _pairs !== 'undefined' && _pairs.length === 1){
                         $('#id-pnl-total').html(json.pnl_total);
