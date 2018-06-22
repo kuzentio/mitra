@@ -1,11 +1,11 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
-from apps.order import constance
+from apps.order import constants
 
 
 class Exchange(models.Model):
-    name = models.CharField(max_length=255, choices=constance.EXCHANGES_CHOICES, unique=True)
+    name = models.CharField(max_length=255, choices=constants.EXCHANGES_CHOICES, unique=True)
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -14,8 +14,8 @@ class Exchange(models.Model):
 
 class Order(models.Model):
     ORDER_TYPE_CHOICES = (
-        (constance.ORDER_TYPE_BUY, constance.ORDER_TYPE_BUY.lower()),
-        (constance.ORDER_TYPE_SELL, constance.ORDER_TYPE_SELL.lower()),
+        (constants.ORDER_TYPE_BUY, constants.ORDER_TYPE_BUY.lower()),
+        (constants.ORDER_TYPE_SELL, constants.ORDER_TYPE_SELL.lower()),
     )
     uuid = models.UUIDField(max_length=255, blank=True, null=True, help_text='Remote unique identifier')
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)

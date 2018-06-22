@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.test import TestCase
 
-from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
+from apps.order.constants import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 from apps.order.factories import OrderFactory, PriceFactory
 from apps.order.models import Order, Price
 from apps.order.utils import (
