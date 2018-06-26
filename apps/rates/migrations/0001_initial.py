@@ -2,13 +2,14 @@
 import os
 
 import django.contrib.postgres.fields.jsonb
+from django.conf import settings
 from django.core.management import call_command
 from django.db import migrations, models
 import django.db.models.deletion
 
 
 def import_current_rates(apps, schema_editor):
-    if os.environ.get('ENV') in ['production', 'staging', 'local']:
+    if os.environ.get('ENV') in ['production', 'staging', 'local'] and not settings.TEST_RUN:
         call_command('import_bittrex_rates')
 
 
