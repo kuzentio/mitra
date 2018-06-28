@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db.models import Sum, F, Avg
 
-from apps.order.constance import ORDER_TYPE_BUY, ORDER_TYPE_SELL
+from apps.order.constants import ORDER_TYPE_BUY, ORDER_TYPE_SELL
 from apps.order.models import Price
 
 

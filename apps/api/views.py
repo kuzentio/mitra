@@ -4,7 +4,7 @@ from rest_framework import generics
 
 from apps.api.serializers import OrderSerializer
 from apps.order import utils
-from apps.order import constance
+from apps.order import constants
 from apps.order.models import Order
 
 
@@ -16,8 +16,8 @@ class APIOrderView(generics.ListAPIView):
         extra_query = {}
         qs = super(APIOrderView, self).get_queryset()
         closed_at_range = [
-            constance.DEFAULT_MIN_DATE,
-            constance.DEFAULT_MAX_DATE,
+            constants.DEFAULT_MIN_DATE,
+            constants.DEFAULT_MAX_DATE,
         ]
 
         if self.request.query_params.get('pair') == 'All':

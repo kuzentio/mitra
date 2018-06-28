@@ -155,3 +155,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework_datatables.pagination.DatatablesPageNumberPagination',
     'PAGE_SIZE': 50,
 }
+
+# Defining test runner
+TEST_RUN = False
+
+TEST_RUNNER = 'config.helper.TestSuiteRunner'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

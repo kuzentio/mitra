@@ -3,12 +3,12 @@
 import django.contrib.postgres.fields.jsonb
 from django.db import migrations, models
 
-from apps.order import constance
+from apps.order import constants
 from apps.order.models import Exchange
 
 
 def create_exchanges_instances(apps, schema_editor):
-    for exchange, exchange_title in constance.EXCHANGES_CHOICES:
+    for exchange, exchange_title in constants.EXCHANGES_CHOICES:
         is_active = False
         if exchange == 'bittrex':
             is_active = True

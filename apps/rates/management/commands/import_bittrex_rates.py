@@ -5,7 +5,7 @@ from bittrex import Bittrex, API_V2_0
 from django.core.management import BaseCommand
 
 from apps.order.models import Exchange
-from apps.rates.constance import BITTREX_RATES_MAPPING
+from apps.rates.constants import BITTREX_RATES_MAPPING
 from apps.rates.models import BTCRate
 
 

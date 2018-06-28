@@ -15,20 +15,43 @@
 {% bootstrap_messages %}
 <div class="container-fluid">
     {% block navbar %}
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-      <a href="/"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
-      <ul class="navbar-nav">
-      {% for exchange in exchanges_online %}
-        <li role="presentation" class="nav-item">
-            <a href="{% url 'order:list' exchange_name=exchange.name %}"
-               class="navbar-brand"
-               role="button" aria-haspopup="true"
-               aria-expanded="false"> {{ exchange.name|title }}
-            </a>
-        </li>
-      {% endfor %}
-      </ul>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a href="/"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
+        <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+            <ul class="navbar-nav mr-auto">
+                {% for exchange in exchanges_online %}
+                    <li class="nav-item active">
+                        <a class="nav-link"
+                           href="{% url 'order:list' exchange_name=exchange.name %}"
+                           role="button" aria-haspopup="true"
+                           aria-expanded="false"
+                        >{{ exchange.name|title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="mx-auto order-0"></div>
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Strategy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Accounts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'login' %}">Log in</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
+
     {% endblock %}
     <div class="content">
         {% block content %}{% endblock %}

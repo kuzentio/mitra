@@ -7,7 +7,7 @@ from decimal import Decimal
 from django.core.management import BaseCommand, CommandError
 from django.utils.timezone import get_current_timezone
 
-from apps.order.constance import BITTREX_ORDER_MAPPING
+from apps.order.constants import BITTREX_ORDER_MAPPING
 from apps.order.models import Order
 
 tz = get_current_timezone()

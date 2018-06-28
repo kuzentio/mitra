@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
 
@@ -5,7 +6,7 @@ from apps.order.forms import OrderPeriodForm
 from apps.order.models import Exchange
 
 
-class OrderView(TemplateView):
+class OrderView(LoginRequiredMixin, TemplateView):
     template_name = 'order/order_list.html'
 
     def dispatch(self, request, *args, **kwargs):

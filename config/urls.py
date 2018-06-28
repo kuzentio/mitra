@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
@@ -9,6 +10,8 @@ urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='dashboard/index.html'), name='index'),
 
     url(settings.ADMIN_URL, admin.site.urls),
+    url(r'^accounts/login/$', LoginView.as_view(), name="login"),
+    url(r'^accounts/logout/$', LogoutView.as_view(), name="logout"),
 
     url(r'^api/', include('apps.api.urls')),
 
