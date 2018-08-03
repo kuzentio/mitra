@@ -18,7 +18,6 @@
             {% for strategy in strategy_list %}
                 <tr onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">
                     <td>{{ strategy.data.EXCHANGE }}</td>
-                    <td>{{ strategy.data.EXCHANGE }}</td>
                     <td>{{ strategy.data.NAME_COIN }} - {{ strategy.data.NAME_COIN_TWO }}</td>
                     <td>{{ strategy.created_at }}</td>
                     <td>{{ strategy.updated_at }}</td>
@@ -108,8 +107,6 @@
         });
 
         $('#modalCreate').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var modal = $(this)
         });
 
         $('#modalCreate').on('hide.bs.modal', function (event) {

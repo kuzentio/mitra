@@ -25,3 +25,6 @@ class Strategy(models.Model):
         self.data[key] = value
         self.save()
 
+    def delete_key(self, key):
+        self.data.pop(key)
+        self.save()
