@@ -1,0 +1,111 @@
+{% extends 'dashboard/base.html' %}
+{% load staticfiles %}
+
+{% block css_imports %}
+    <link rel="stylesheet" href="{% static 'datatables.net-dt/css/jquery.dataTables.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h5>Strategy uuid - <i>{{ object.uuid }}</i></h5>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <tbody>
+                {% for key, value in object.data.items %}
+                    <tr>
+                        <td><input type="text" value="{{ key }}" disabled></td>
+                        <td><input type="text" value="{{ value }}" disabled></td>
+                        <td>
+                            <a href="#"
+                               data-toggle="modal"
+                               data-key="{{ key }}"
+                               data-value="{{ value }}"
+                               data-target="#modalEdit"><i class="fa fa-pencil" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#"><i class="fa fa-times" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="modalEdit" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- body -->
+                <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form action="{% url 'api:api_strategy_variable_edit' object.uuid %}" method="post" class="form-inline" id="strategyEdit">
+                            {% csrf_token %}
+                            <div class="col-md-3">
+                                <span class="input-group-addon" id="key"></span>
+                            </div>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" value="" name="value" id="value">
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control btn btn-sm btn-success" type="submit" value="Change">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="application/javascript">
+        $(document).ready(function () {
+        })
+        function render_kv_form(key, value) {
+            $('span#key').html(key);
+            $('input#value').attr('value', value);
+        }
+        function sendEdit (form) {
+
+        }
+        $('#strategyEdit').on('submit', function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var key = $('#key').text();
+            var data = form.serialize();
+            var url = form.attr('action');
+            $.ajax({
+               type: "POST",
+               url: url,
+               data: data + '&key=' + key,
+               success: function(data)
+               {
+                   $('#modalEdit').modal('hide');
+               }
+             });
+        });
+        $('#modalEdit').on('show.bs.modal', function (event) {
+            var $link = $(event.relatedTarget);
+            var href = $link.attr('href');
+            var key = $link.attr('data-key');
+            var value = $link.attr('data-value');
+
+            render_kv_form(key, value);
+            var modal = $(this)
+        });
+        $('#modalEdit').on('hide.bs.modal', function (event) {
+            location.reload();
+        });
+    </script>
+{% endblock %}

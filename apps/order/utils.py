@@ -70,7 +70,9 @@ def aggregate_orders_by_types(queryset):
             aggregations[_type]['total__sum'] = aggregations[_type]['total__sum'] - avg_amount
 
         total_buy = aggregations[ORDER_TYPE_BUY].pop('total__sum') + aggregations[ORDER_TYPE_BUY].pop('commission__sum')
-        total_sell = aggregations[ORDER_TYPE_SELL].pop('total__sum') - aggregations[ORDER_TYPE_SELL].pop('commission__sum')
+        total_sell = aggregations[ORDER_TYPE_SELL].pop('total__sum') - aggregations[ORDER_TYPE_SELL].pop(
+            'commission__sum'
+        )
 
     aggregations[ORDER_TYPE_BUY] = round(total_buy, 8)
     aggregations[ORDER_TYPE_SELL] = round(total_sell, 8)

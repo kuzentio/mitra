@@ -1,0 +1,121 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+    <h4>Strategies: </h4>
+    <p><button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modalCreate">Create new</button></p>
+
+    <div class="list-group">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Exchange</th>
+                <th>Pair</th>
+                <th>Created at</th>
+                <th>Updated at</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for strategy in strategy_list %}
+                <tr onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">
+                    <td>{{ strategy.data.EXCHANGE }}</td>
+                    <td>{{ strategy.data.EXCHANGE }}</td>
+                    <td>{{ strategy.data.NAME_COIN }} - {{ strategy.data.NAME_COIN_TWO }}</td>
+                    <td>{{ strategy.created_at }}</td>
+                    <td>{{ strategy.updated_at }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Create strategy Modal -->
+    <div class="modal" id="modalCreate" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Create new strategy</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- body -->
+                <div class="modal-body">
+                    <form action="{% url 'api:api_strategy_create' %}" class="form" id="createStrategyForm" method="post">
+                        <div class="col-sm-12 validation-errors"></div>
+                        {% csrf_token %}
+                        {% for key, value in create_strategy_defaults.items %}
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <input type="text" class="form-control" aria-describedby="basic-addon2" name="key" value="{{ key }}" readonly>
+                                </div>
+                                <input type="text" class="form-control" aria-describedby="basic-addon2" name="value" required>
+                            </div>
+                            <br/>
+                        {% endfor %}
+                        <p></p>
+                        <input type="submit" class="btn btn-success" value="Save">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="application/javascript">
+        function activateRow (row) {
+            row.find('input').removeAttr('readonly');
+            row.find('.edit-row').toggleClass('edit-row save-row')
+        }
+
+        function saveRow (row) {
+            $form = row.parents('form');
+            $form.submit();
+        }
+
+        function createStrategy(form) {
+            var $form = form;
+            var action = $form.attr('action');
+            var data = $form.serialize();
+            $.post(action, data)
+                .done(function (data) {
+                    if (data.success === false) {
+                        data.errors.data.forEach(function (item) {
+                            var $validation_error = $('<p><small class="text-danger">'+item+'<small></p>');
+                            $('.validation-errors').append($validation_error)
+                        })
+                    }
+                    else {
+                        $('#modalCreate').modal('hide');
+                    }
+                })
+        }
+
+        $(document).on("click", ".save-row", function(event){
+            saveRow($(this).parents('.input-group'))
+        });
+
+        $(document).on("click", ".edit-row", function(event){
+            activateRow($(this).parents('.input-group'))
+        });
+
+        $(document).on('submit', '#createStrategyForm', function (event) {
+            event.preventDefault();
+            $('.validation-errors').html('');
+            createStrategy($(this))
+        });
+
+        $('#modalCreate').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var modal = $(this)
+        });
+
+        $('#modalCreate').on('hide.bs.modal', function (event) {
+            location.reload();
+        });
+
+    </script>
+
+{% endblock %}

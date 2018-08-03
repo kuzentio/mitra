@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^api/', include('apps.api.urls')),
 
     url(r'^orders/', include('apps.order.urls')),
+    url(r'^strategy/', include('apps.strategy.urls')),
 ]
 
 if settings.DEBUG:

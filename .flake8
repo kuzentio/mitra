@@ -1,0 +1,5 @@
+[flake8]
+ignore = [E501,  E101]
+exclude = *migrations*, node_modules/*, , config/*, cover/*, env/*
+max-complexity = 60
+max_line_length = 120

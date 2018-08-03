@@ -13,7 +13,7 @@ class OrderView(LoginRequiredMixin, TemplateView):
         get_object_or_404(Exchange, name=self.kwargs['exchange_name'])
         return super(OrderView, self).dispatch(request)
 
-    def get_context_data(self,  **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(OrderView, self).get_context_data()
         context['form'] = OrderPeriodForm(self.request.GET)
         context['exchange_name'] = self.kwargs.get('exchange_name', 'none')

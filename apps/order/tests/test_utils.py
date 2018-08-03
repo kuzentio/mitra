@@ -32,7 +32,7 @@ class TestOrderUtils(TestCase):
             {
                 'pairs': ['BTC-MANA'],
                 'BUY': ((self.order_quantity * self.order_price) + self.order_commission) * 3,
-                'SELL': ((self.order_quantity* self.order_price) - self.order_commission) * 3,
+                'SELL': ((self.order_quantity * self.order_price) - self.order_commission) * 3,
             }, payload
         )
 
