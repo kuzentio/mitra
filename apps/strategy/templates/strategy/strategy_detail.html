@@ -26,14 +26,23 @@
                             </a>
                         </td>
                         <td>
-                            <a href="#"><i class="fa fa-times" aria-hidden="true"></i></a>
+                            <div id="deleteKey">
+                                <a href="{% url 'api:strategy_delete_key_view' object.uuid %}" data-key="{{ key }}"><i class="fa fa-times" aria-hidden="true"></i></a>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
+                    <tr>
+                        <form action="{% url 'api:strategy_set_value_view' object.uuid %}" id="newKey">
+                            {% csrf_token %}
+                            <td><input type="text" name="key"></td>
+                            <td><input type="text" name="value"></td>
+                            <td><input type="submit" class="btn btn-sm btn-success" value="Add"></td>
+                        </form>
+                    </tr>
                 </tbody>
             </table>
         </div>
-    </div>
 
     <div class="modal" id="modalEdit" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
@@ -47,7 +56,7 @@
                 <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <form action="{% url 'api:api_strategy_variable_edit' object.uuid %}" method="post" class="form-inline" id="strategyEdit">
+                        <form action="{% url 'api:strategy_set_value_view' object.uuid %}" method="post" class="form-inline" id="strategyEdit">
                             {% csrf_token %}
                             <div class="col-md-3">
                                 <span class="input-group-addon" id="key"></span>
@@ -71,14 +80,40 @@
 {% block scripts %}
     <script type="application/javascript">
         $(document).ready(function () {
-        })
+            $(document).on('click', "#deleteKey", function (event) {
+                event.preventDefault();
+                var url = $(this).children("a").attr('href');
+                var key = $(this).children("a").attr('data-key');
+                var csrf = $("{% csrf_token %}");
+                $.ajax({
+                   type: "POST",
+                   url: url,
+                   data: csrf.serialize() + '&' + "key="+key,
+                   success: function(data)
+                   {
+                       location.reload();
+                   }
+                });
+
+            });
+        });
         function render_kv_form(key, value) {
             $('span#key').html(key);
             $('input#value').attr('value', value);
         }
-        function sendEdit (form) {
-
-        }
+        $('#newKey').on('submit', function (event) {
+            event.preventDefault();
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(data)
+                {
+                    location.reload();
+                }
+            });
+        });
         $('#strategyEdit').on('submit', function (event) {
             event.preventDefault();
             var form = $(this);
@@ -97,12 +132,9 @@
         });
         $('#modalEdit').on('show.bs.modal', function (event) {
             var $link = $(event.relatedTarget);
-            var href = $link.attr('href');
             var key = $link.attr('data-key');
             var value = $link.attr('data-value');
-
             render_kv_form(key, value);
-            var modal = $(this)
         });
         $('#modalEdit').on('hide.bs.modal', function (event) {
             location.reload();

@@ -2,7 +2,8 @@ from datetime import datetime
 
 from django.http import JsonResponse
 from rest_framework import generics, status
-from rest_framework.generics import get_object_or_404, GenericAPIView
+from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from apps.api.serializers import OrderSerializer, StrategyCreateSerializer
@@ -84,10 +85,20 @@ class APIStrategyCreateView(generics.CreateAPIView):
         return Response(data=response_data, status=status.HTTP_200_OK, )
 
 
-def api_strategy_edit_view(request, strategy_uuid):
+@api_view(["POST"])
+def strategy_set_value_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
     key = request.POST.get('key')
     value = request.POST.get('value')
     strategy.set_value(key, value)
+
+    return JsonResponse({'success': True, 'data': strategy.data})
+
+
+@api_view(["POST"])
+def strategy_delete_key_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
+    key = request.POST.get('key')
+    strategy.delete_key(key)
 
     return JsonResponse({'success': True, 'data': strategy.data})
