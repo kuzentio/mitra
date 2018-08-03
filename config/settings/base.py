@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 
     'apps.api',
     'apps.rates',
+    'apps.strategy',
 ]
 
 MIDDLEWARE = [
@@ -163,3 +164,8 @@ TEST_RUNNER = 'config.helper.TestSuiteRunner'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+ALLOWED_EXCHANGES = [
+    'bittrex',
+    'binance',
+]

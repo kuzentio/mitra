@@ -10,6 +10,8 @@ from apps.rates.models import BTCRate
 
 
 class Command(BaseCommand):
+    help = 'This command fetch rates from Bittrex on BTC-USDT market, on hourly basis.'
+
     def get_rate_defaults(self, rate):
         result = {}
         field_mapping = dict(BITTREX_RATES_MAPPING)
@@ -27,7 +29,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         bittrex = Bittrex(
-            api_key=None,  # This is open api resource so we no need credentials
+            api_key=None,  # This is open api resource. So we no need credentials.
             api_secret=None,
             api_version=API_V2_0
         )

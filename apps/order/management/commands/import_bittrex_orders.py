@@ -77,5 +77,3 @@ class Command(BaseCommand):
         self.save_orders(account, orders)
         self.stdout.write('Done')
         return
-
-

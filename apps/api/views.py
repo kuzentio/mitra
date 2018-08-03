@@ -1,11 +1,15 @@
 from datetime import datetime
 
-from rest_framework import generics
+from django.http import JsonResponse
+from rest_framework import generics, status
+from rest_framework.generics import get_object_or_404, GenericAPIView
+from rest_framework.response import Response
 
-from apps.api.serializers import OrderSerializer
+from apps.api.serializers import OrderSerializer, StrategyCreateSerializer
 from apps.order import utils
 from apps.order import constants
 from apps.order.models import Order
+from apps.strategy.models import Strategy
 
 
 class APIOrderView(generics.ListAPIView):
@@ -54,3 +58,36 @@ class APIOrderView(generics.ListAPIView):
             {'pairs': list(self.get_queryset().all().values_list('pair', flat=True).distinct())}
         )
         return response
+
+
+class APIStrategyCreateView(generics.CreateAPIView):
+    serializer_class = StrategyCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        data = dict(request.data)
+        strategy_data = dict(
+            zip(data['key'], data['value'])
+        )
+        serializer = self.serializer_class(data={
+            'data': strategy_data,
+            'user': request.user.id
+        })
+        if serializer.is_valid():
+            serializer.save()
+
+            headers = self.get_success_headers(serializer.data)
+            return Response({'success': True}, status=status.HTTP_201_CREATED, headers=headers)
+
+        response_data = serializer.data
+        response_data['errors'] = serializer.errors
+        response_data['success'] = False
+        return Response(data=response_data, status=status.HTTP_200_OK, )
+
+
+def api_strategy_edit_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
+    key = request.POST.get('key')
+    value = request.POST.get('value')
+    strategy.set_value(key, value)
+
+    return JsonResponse({'success': True, 'data': strategy.data})

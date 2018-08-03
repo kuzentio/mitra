@@ -6,10 +6,17 @@
     <title>{% block title %}{% project_name %}{% endblock %}</title>
     <meta charset="UTF-8">
     {% bootstrap_css %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.css' %}">
     {% bootstrap_javascript jquery='full' %}
-    {% block css_imports %}{% endblock %}
-    {% block js_imports %}{% endblock %}
+    {% block css_imports %}
+        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    {% endblock %}
+    {% block js_imports %}
+        <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+    {% endblock %}
+    <style>
+    {% block css %}{% endblock %}
+    </style>
 </head>
 <body>
 {% bootstrap_messages %}
@@ -35,7 +42,7 @@
             <ul class="navbar-nav ml-auto">
                 {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Strategy</a>
+                        <a class="nav-link" href="{% url 'strategy:list' %}">Strategy</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Accounts</a>
