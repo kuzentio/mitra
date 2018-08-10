@@ -4,16 +4,6 @@ from django.db import models
 from apps.order.models import Exchange
 
 
-class Legal(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=255)
-    middlename = models.CharField(max_length=255, blank=True, null=True)
-    secondname = models.CharField(max_length=255, blank=True, null=True)
-    zipcode = models.CharField(max_length=255, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    city = models.CharField(max_length=255, blank=True, null=True)
-
-
 class Account(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     exchange: Exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
