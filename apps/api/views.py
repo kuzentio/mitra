@@ -102,3 +102,11 @@ def strategy_delete_key_view(request, strategy_uuid):
     strategy.delete_key(key)
 
     return JsonResponse({'success': True, 'data': strategy.data})
+
+
+@api_view(["POST"])
+def strategy_delete_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
+    strategy.is_deleted = True
+    strategy.save()
+    return JsonResponse({'success': True})

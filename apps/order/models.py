@@ -42,6 +42,7 @@ class Order(models.Model):
 class Price(models.Model):
     pair = models.CharField(max_length=10, unique=True)
     ask = models.DecimalField(decimal_places=8, max_digits=12)
+    bid = models.DecimalField(decimal_places=8, max_digits=12)
     timestamp = models.DateTimeField(blank=True, null=True)
     data = JSONField(blank=True, null=True)
 

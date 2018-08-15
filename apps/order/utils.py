@@ -151,7 +151,8 @@ def get_orders_pnl(queryset):
     if queryset.filter(type=ORDER_TYPE_SELL).exists():
         pair = queryset.values_list('pair', flat=True).distinct()
         try:
-            theoretical_sell_price = Price.objects.get(pair=pair[0]).ask
+            # theoretical_sell_price = Price.objects.get(pair=pair[0]).ask
+            theoretical_sell_price = Price.objects.get(pair=pair[0]).bid
         except (Price.MultipleObjectsReturned, Price.DoesNotExist, AttributeError):
             theoretical_sell_price = Decimal('0.0')
     else:

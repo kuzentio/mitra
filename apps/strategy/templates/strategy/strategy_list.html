@@ -16,12 +16,17 @@
             </thead>
             <tbody>
             {% for strategy in strategy_list %}
-                <tr onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">
-                    <td>{{ strategy.data.EXCHANGE }}</td>
-                    <td>{{ strategy.data.NAME_COIN }} - {{ strategy.data.NAME_COIN_TWO }}</td>
-                    <td>{{ strategy.created_at }}</td>
-                    <td>{{ strategy.updated_at }}</td>
-                    <td></td>
+                <tr>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.data.EXCHANGE }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.data.NAME_COIN }} - {{ strategy.data.NAME_COIN_TWO }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.created_at }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.updated_at }}</td>
+                    <td>
+                        <form action="{% url 'api:strategy_delete_view' strategy.uuid %}" method="post" id="deleteStrategy">
+                            {% csrf_token %}
+                            <input class="btn btn-small btn-danger" type="submit" value="delete">
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -91,6 +96,16 @@
                     }
                 })
         }
+        function deleteStrategy(form) {
+            var $form = form;
+            console.log($form);
+            var action = $form.attr('action');
+            var data = $form.serialize();
+            $.post(action, data)
+                .done(function (data) {
+                    location.reload();
+                })
+        }
 
         $(document).on("click", ".save-row", function(event){
             saveRow($(this).parents('.input-group'))
@@ -104,6 +119,11 @@
             event.preventDefault();
             $('.validation-errors').html('');
             createStrategy($(this))
+        });
+        $(document).on('submit', '#deleteStrategy', function (event) {
+            event.preventDefault();
+
+            deleteStrategy($(this))
         });
 
         $('#modalCreate').on('show.bs.modal', function (event) {
