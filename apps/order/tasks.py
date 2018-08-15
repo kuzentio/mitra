@@ -25,6 +25,7 @@ def import_bittrex_price(pair):
     if result:  # TODO: install Logger (!)
         defaults = {
             'ask': result['Ask'],
+            'bid': result['Bid'],
             'timestamp': datetime.now(),
             'data': result,
         }
