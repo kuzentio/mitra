@@ -132,7 +132,7 @@ class TestPrice(TestCase):
             quantity=self.buy_quantity,
             price=self.buy_price,
         )
-        self. sell_order = OrderFactory.create(
+        self.sell_order = OrderFactory.create(
             type=ORDER_TYPE_SELL,
             quantity=self.buy_quantity - Decimal('5'),
             price=self.buy_price + Decimal('1')
@@ -140,19 +140,19 @@ class TestPrice(TestCase):
 
     def test_unrealized_pnl_with_same_price(self):
         PriceFactory.create(
-            ask=Decimal('5'),
+            bid=Decimal('5'),
         )
         result = get_orders_pnl(Order.objects.all())
         self.assertEqual(result['pnl_unrealized'], Decimal('5') * Decimal('5'))
 
     def test_unrealized_pnl_includes_last_price_change(self):
         PriceFactory.create(
-            ask=Decimal('5')
+            bid=Decimal('5')
         )
         result = get_orders_pnl(Order.objects.all())
         self.assertEqual(result['pnl_unrealized'], Decimal('5') * Decimal('5'))
         price = Price.objects.last()
-        price.ask = Decimal('7')
+        price.bid = Decimal('7')
         price.save()
         result = get_orders_pnl(Order.objects.all())
         self.assertEqual(result['pnl_unrealized'], Decimal('7') * Decimal('5'))

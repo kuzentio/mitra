@@ -306,3 +306,4 @@ config/static/
 .notes
 
 gbot-trader/
+frontend/

@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'apps.dashboard',
 
     'apps.api',
-    'apps.rates',
     'apps.strategy',
 ]
 

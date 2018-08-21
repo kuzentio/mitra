@@ -88,8 +88,8 @@ class APIStrategyCreateView(generics.CreateAPIView):
 @api_view(["POST"])
 def strategy_set_value_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
-    key = request.POST.get('key')
-    value = request.POST.get('value')
+    key = request.POST.get('key', '')
+    value = request.POST.get('value', '')
     strategy.set_value(key, value)
 
     return JsonResponse({'success': True, 'data': strategy.data})
