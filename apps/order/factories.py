@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import factory
 
 from dateutil.tz import datetime
