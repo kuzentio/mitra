@@ -1,0 +1,10 @@
+{% extends 'dashboard/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+    <div class="card">
+      <div class="card-body">
+        <h4>Heroku credentials:</h4>
+        API_KEY: {{ heroku.api_key }}
+      </div>
+    </div>
+{% endblock %}

@@ -15,6 +15,7 @@ urlpatterns = [
 
     url(r'^api/', include('apps.api.urls')),
 
+    url(r'^accounts/', include('apps.profile_app.urls')),
     url(r'^orders/', include('apps.order.urls')),
     url(r'^strategy/', include('apps.strategy.urls')),
 ]
