@@ -18,3 +18,4 @@ class Account(models.Model):
 class HerokuCredentials(models.Model):
     user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     api_key: str = models.CharField(max_length=255, unique=True)
+
