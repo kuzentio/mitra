@@ -10,6 +10,7 @@ from apps.api.serializers import OrderSerializer, StrategyCreateSerializer
 from apps.order import utils
 from apps.order import constants
 from apps.order.models import Order
+from apps.profile_app.models import HerokuCredentials
 from apps.strategy.models import Strategy
 
 
@@ -109,4 +110,15 @@ def strategy_delete_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
     strategy.is_deleted = True
     strategy.save()
+    return JsonResponse({'success': True})
+
+
+@api_view(["POST"])
+def account_heroku_api_settings_view(request):
+    heroku_credentials = get_object_or_404(
+        HerokuCredentials.objects.filter(user=request.user)
+    )
+    api_key = request.POST.get("api_key")
+    heroku_credentials.api_key = api_key
+    heroku_credentials.save()
     return JsonResponse({'success': True})

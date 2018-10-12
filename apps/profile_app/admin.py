@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.profile_app.models import Account
+from apps.profile_app.models import Account, HerokuCredentials
 
 
 @admin.register(Account)
@@ -8,3 +8,8 @@ class AccountAdmin(admin.ModelAdmin):
 
     def exchange_name(self, obj):
         return obj.exchange.name
+
+
+@admin.register(HerokuCredentials)
+class HerokuCredentialsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'api_key', 'user')
