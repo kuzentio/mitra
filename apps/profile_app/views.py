@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
+from apps.profile_app.forms import HerokuCredentialsForm
 from apps.profile_app.models import HerokuCredentials
 
 
@@ -11,6 +12,8 @@ class AccountsView(LoginRequiredMixin, TemplateView):
         context = super(AccountsView, self).get_context_data(**kwargs)
 
         user = self.request.user
-        context['heroku'] = HerokuCredentials.objects.get(user=user)
+        heroku, _ = HerokuCredentials.objects.get_or_create(user=user)
+        context['heroku'] = heroku
+        context['heroku_form'] = HerokuCredentialsForm(instance=heroku)
 
         return context
