@@ -15,9 +15,6 @@ def create_bittrex_account(apps, schema_editor):
     Account.objects.create(
         user=dummy_user,
         exchange=Exchange.objects.get(name='bittrex'),
-        email='0585ec@gmail.com',
-        api_key=settings.MITRA_DUMMY_BITTREX_API_KEY,
-        api_secret=settings.MITRA_DUMMY_BITTREX_API_SECRET,
         is_active=True
     )
     return 'Done Dummy user for Bittrex was successfully created.'

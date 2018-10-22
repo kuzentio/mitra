@@ -4,8 +4,7 @@ MAINTAINER Ihor Kuzmenko "0585ec@gmail.com"
 ENV PYTHONUNBUFFERED 1
 
 # setup
-RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get update -q -y
 
 RUN mkdir /mitra
 WORKDIR /mitra

@@ -1,4 +1,0 @@
--r base.txt
-
-django-pdb==0.6.1
-factory-boy==2.11.1

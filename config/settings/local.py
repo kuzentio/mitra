@@ -1,5 +1,22 @@
 from .base import *  # noqa
 
+from dotenv import load_dotenv
+from pathlib import Path  # python3 only
+
+env_path = Path('.') / '.env.local'
+load_dotenv(dotenv_path=str(env_path.absolute()))
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+    }
+}
+
 AUTH_PASSWORD_VALIDATORS = []
 
 MIDDLEWARE += [
@@ -32,9 +49,6 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
-
-MITRA_DUMMY_BITTREX_API_KEY = os.environ.get('MITRA_DUMMY_BITTREX_API_KEY')
-MITRA_DUMMY_BITTREX_API_SECRET = os.environ.get('MITRA_DUMMY_BITTREX_API_SECRET')
 
 BOOTSTRAP4 = {
     'jquery_url': STATIC_URL + 'jquery/dist/jquery.js',
