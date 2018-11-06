@@ -11,6 +11,7 @@ WORKDIR /mitra
 ADD . .
 
 RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements/base.txt
 
 EXPOSE 8000
 EXPOSE 5432
