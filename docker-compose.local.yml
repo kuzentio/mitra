@@ -4,27 +4,35 @@ volumes:
     database_data:
 
 services:
-    local:
+    web:
         build: .
         depends_on:
           - db
         env_file:
-          - ./.env.local
+          - docker/.env.local
         volumes:
           - .:/mitra
         ports:
-          - "8000:8000"
+          - "127.0.0.1:8000:8000"
+        networks:
+          mitra:
         command: >
             sh -c "
                 pip install -r requirements/local.txt &&
                 python manage.py migrate
-                python manage.py runserver
+                python manage.py runserver 0.0.0.0:8000
             "
     db:
         image: postgres:10.1
         environment:
-          - ./.env.local
+          - docker/.env.local
         ports:
           - "5432:5432"
         volumes:
-          - .:/mitra
+          - ./docker/provision:/docker-entrypoint-initdb.d
+          - .:/mitra-db
+        networks:
+          mitra:
+
+networks:
+    mitra:

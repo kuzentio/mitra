@@ -11,3 +11,6 @@ WORKDIR /mitra
 ADD . .
 
 RUN pip3 install --upgrade pip
+
+EXPOSE 8000
+EXPOSE 5432
