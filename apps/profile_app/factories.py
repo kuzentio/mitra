@@ -22,7 +22,6 @@ class AccountFactory(factory.DjangoModelFactory):
         django_get_or_create = ('user', )
 
     user = factory.SubFactory(UserFactory)
-    # exchange = factory.SubFactory('apps.order.factories.ExchangeFactory')
     exchange = factory.SubFactory(ExchangeFactory)
     email = 'email@example.com'
     username = factory.Faker('user_name')
