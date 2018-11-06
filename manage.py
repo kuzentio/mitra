@@ -3,6 +3,13 @@ import os
 import sys
 
 if __name__ == '__main__':
+    from dotenv import load_dotenv
+    from pathlib import Path  # python3 only
+
+    env_path = Path('.') / '.env.local'
+    # load_dotenv(dotenv_path=env_path)
+    load_dotenv(dotenv_path=str(env_path.absolute()))
+
     if os.environ.get('ENV') is not None:
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.{}'.format(os.environ.get('ENV')))
     else:

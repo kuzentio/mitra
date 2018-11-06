@@ -6,13 +6,23 @@ from django.db import migrations, models
 from django.core.management import call_command
 import django.db.models.deletion
 
+from apps.order.factories import OrderFactory
+from apps.order.models import Exchange
 from apps.profile_app.models import Account
 
 
 def import_bittrex_dummy_orders(apps, schema_editor):
-    if os.environ.get('ENV') in ['production', 'staging', 'local'] and not settings.TEST_RUN:
-        for account in Account.objects.all():
-            call_command('import_bittrex_orders', account_email=account.email)
+    if not settings.TEST_RUN:
+        if os.environ.get('ENV') == 'local':
+            exchange = Exchange.objects.last()
+            for account in Account.objects.all():
+                OrderFactory.create(
+                    account=account,
+                    exchange=exchange,
+                )
+        if os.environ.get('ENV') in ['production', 'staging']:
+            for account in Account.objects.all():
+                call_command('import_bittrex_orders', account_email=account.email)
 
 
 class Migration(migrations.Migration):
