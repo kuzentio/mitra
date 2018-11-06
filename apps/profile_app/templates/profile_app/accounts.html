@@ -3,16 +3,7 @@
 {% block content %}
     <div class="card">
       <div class="card-body">
-        {% if heroku.api_key %}
-          <h4>Heroku credentials:</h4>
-          API_KEY: {{ heroku.api_key }}
-        {% else %}
-          <form class="form form-horizontal" role="form" method="post" action="{% url 'api:account_heroku_credentials_view' %}">
-          {% bootstrap_form heroku_form %}
-            {% csrf_token %}
-            <button type="submit" class="btn btn-success">Submit</button>
-          </form>
-        {% endif %}
+        <p>foo</p>
       </div>
     </div>
 {% endblock %}
