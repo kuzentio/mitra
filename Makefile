@@ -1,24 +1,29 @@
+WEB_CONTAINER_ID=$(shell docker ps --filter ancestor=mitra_web --format "{{.ID}}")
+
 up:
 	docker-compose -f docker-compose.local.yml up --build
 
-down:
+start:
+	docker-compose -f docker-compose.local.yml up -d
+
+stop:
 	docker-compose -f docker-compose.local.yml down
 
 restart:
-	make down
+	make stop
 	make start
-
-start:
-	docker-compose -f docker-compose.local.yml up -d
 
 test:
 	docker-compose -f docker-compose.local.yml exec web python manage.py test
 
 codestyle:
-	flake8 .
+	docker-compose -f docker-compose.local.yml exec web flake8 .
 
 shell_plus:
 	docker-compose -f docker-compose.local.yml exec web python manage.py shell_plus
 
 bash:
 	docker-compose -f docker-compose.local.yml exec web bash
+
+attach:
+	docker attach $(WEB_CONTAINER_ID)

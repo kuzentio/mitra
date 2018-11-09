@@ -1,8 +1,5 @@
 version: '3'
 
-volumes:
-    database_data:
-
 services:
     web:
         build: .
@@ -14,6 +11,9 @@ services:
           - .:/mitra
         ports:
           - "127.0.0.1:8000:8000"
+        restart: always
+        stdin_open: true
+        tty: true
         networks:
           mitra:
         command: >
@@ -30,7 +30,7 @@ services:
           - "5432:5432"
         volumes:
           - ./docker/provision:/docker-entrypoint-initdb.d
-          - .:/mitra-db
+          - ./db/data:/var/lib/postgresql/data
         networks:
           mitra:
 

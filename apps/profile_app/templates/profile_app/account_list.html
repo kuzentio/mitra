@@ -1,0 +1,95 @@
+{% extends 'dashboard/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<h4>Exchange accounts: </h4>
+<p><button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modalCreate">Add</button></p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Exchange</th>
+            <th>Key</th>
+            <th>Connection</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for account in account_list %}
+        <tr>
+            <td>{{ account.exchange }}</td>
+            <td>{{ account.api_key }}</td>
+            <td>{{ account.is_active }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+<!-- Create account Modal -->
+<div class="modal" id="modalCreate" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add account from Exchange</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- body -->
+            <div class="modal-body">
+                <form action="{% url 'api:api_account_create' %}" class="form" id="createAccountForm" method="post">
+                    <div class="col-sm-12 validation-errors"></div>
+                    {% csrf_token %}
+                    {% for field in create_account_form %}
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <input type="text" class="form-control" aria-describedby="basic-addon2" value="{{ field.label }}" readonly>
+                            </div>
+                            {{ field }}
+                        </div>
+                    <br>
+                    {% endfor %}
+                    <input type="submit" class="btn btn-success" value="Save">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="application/javascript">
+        function createAccount(form) {
+            var $form = form;
+            var action = $form.attr('action');
+            var data = $form.serialize();
+            console.log(data);
+
+            $.post(action, data)
+                .done(function (data) {
+                    if (data.success === false) {
+                        for (var error in data.errors) {
+                            var $validation_error = $('<p><small class="text-danger">'+data.errors[error]+'<small></p>');
+                            $('.validation-errors').append($validation_error)
+                        }
+                    }
+                    else {
+                        $('#modalCreate').modal('hide');
+                    }
+                })
+            }
+        $(document).on('submit', '#createAccountForm', function (event) {
+            event.preventDefault();
+            $('.validation-errors').html('');
+            createAccount($(this))
+        });
+
+        $('#modalCreate').on('show.bs.modal', function (event) {
+        });
+
+        $('#modalCreate').on('hide.bs.modal', function (event) {
+            location.reload();
+        });
+
+    </script>
+{% endblock %}
