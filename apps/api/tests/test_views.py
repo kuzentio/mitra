@@ -4,7 +4,6 @@ from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED, HTTP_200_OK, HTTP
 
 from apps.order.constants import EXCHANGES_CHOICES
 from apps.profile_app.factories import UserFactory
-from apps.strategy.constants import CREATE_STRATEGY_DEFAULTS
 from apps.strategy.factories import StrategyFactory
 
 client = Client()
@@ -139,4 +138,3 @@ class TestStrategyCreateView(TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['errors']['api_key'], ['This field may not be null.', ])
         self.assertEqual(data['errors']['api_secret'], ['This field may not be null.', ])
-
