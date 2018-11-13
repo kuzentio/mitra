@@ -12,7 +12,7 @@ class UserFactory(factory.DjangoModelFactory):
         django_get_or_create = ('username', )
     first_name = "Ihor"
     last_name = "Kuzmenko"
-    username = "hello@test.com"
+    username = "kuzentio"
     password = make_password('password')
 
 

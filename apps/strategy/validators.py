@@ -1,4 +1,3 @@
-from django.conf import settings
 from rest_framework import serializers
 
 from apps.order.constants import EXCHANGES_CHOICES
@@ -36,11 +35,12 @@ def validate_key_length(data):
 def validate_exchange_name(data):
     keys = data.keys()
     values = data.values()
+    exchanges = dict(EXCHANGES_CHOICES).keys()
     for key, value in zip(list(keys), list(values)):
-        if key == 'EXCHANGE' and value.lower() not in dict(EXCHANGES_CHOICES).keys():
+        if key == 'EXCHANGE' and value.lower() not in exchanges:
             raise serializers.ValidationError(
                 "We do not know about {0} exchange, please choose from - {1}".format(
-                    value.lower(), ', '.join(settings.ALLOWED_EXCHANGES))
+                    value.lower(), ', '.join(exchanges))
             )
 
 

@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from apps.api.serializers import OrderSerializer, StrategyCreateSerializer
+from apps.api.serializers import OrderSerializer, StrategyCreateSerializer, AccountCreateSerializer
 from apps.order import utils
 from apps.order import constants
 from apps.order.models import Order
@@ -61,28 +61,50 @@ class APIOrderView(generics.ListAPIView):
         return response
 
 
-class APIStrategyCreateView(generics.CreateAPIView):
+class BaseApiCreateView(generics.CreateAPIView):
     serializer_class = StrategyCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        data = dict(request.data)
-        strategy_data = dict(
-            zip(data['key'], data['value'])
-        )
-        serializer = self.serializer_class(data={
-            'data': strategy_data,
-            'user': request.user.id
-        })
+        serializer = self.serializer_class(data=self.get_serializer_context())
         if serializer.is_valid():
             serializer.save()
 
             headers = self.get_success_headers(serializer.data)
-            return Response({'success': True}, status=status.HTTP_201_CREATED, headers=headers)
-
+            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
         response_data = serializer.data
         response_data['errors'] = serializer.errors
         response_data['success'] = False
-        return Response(data=response_data, status=status.HTTP_200_OK, )
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+class APIStrategyCreateView(BaseApiCreateView):
+    serializer_class = StrategyCreateSerializer
+
+    def get_serializer_context(self):
+        request_data = dict(self.request.data)
+        data = {
+            'data': dict(
+                zip(request_data.get('key'), request_data.get('value'))
+            ),
+            'user': self.request.user.id
+        }
+
+        return data
+
+
+class APIAccountCreateView(BaseApiCreateView):
+    serializer_class = AccountCreateSerializer
+
+    def get_serializer_context(self):
+        request_data = self.request.data.dict()
+        data = {
+            'exchange': request_data.get('exchange'),
+            'api_key': request_data.get('api_key'),
+            'api_secret': request_data.get('api_secret'),
+            'user': self.request.user.id
+        }
+
+        return data
 
 
 @api_view(["POST"])

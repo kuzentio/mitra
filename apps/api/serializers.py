@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from apps.order.models import Order
+from apps.order.models import Order, Exchange
+from apps.profile_app.models import Account
 from apps.strategy import validators
 from apps.strategy.models import Strategy
 
@@ -36,3 +37,32 @@ class StrategyCreateSerializer(serializers.ModelSerializer):
                 ]
             }
         }
+
+
+class AccountCreateSerializer(serializers.ModelSerializer):
+    exchange = serializers.CharField()
+    api_key = serializers.CharField()
+    api_secret = serializers.CharField()
+
+    class Meta:
+        model = Account
+        fields = ('user', 'exchange', 'api_key', 'api_secret')
+
+    def validate_exchange(self, exchange_name):
+        validators.validate_exchange_name({'EXCHANGE': exchange_name})
+        try:
+            exchange = Exchange.objects.get(name=exchange_name)
+        except Exchange.DoesNotExist:
+            raise serializers.ValidationError("Could not find any exchanges for this name.")
+
+        return exchange
+
+    def validate_api_key(self, api_key):
+        validators.validate_key_length({"KEY": api_key})
+
+        return api_key
+
+    def validate_api_secret(self, api_secret):
+        validators.validate_secret_length({"SECRET": api_secret})
+
+        return api_secret
