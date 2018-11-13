@@ -1,7 +1,10 @@
 from django.test import Client, TestCase
 from django.urls import reverse
-from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED, HTTP_200_OK
+from rest_framework.status import HTTP_405_METHOD_NOT_ALLOWED, HTTP_200_OK, HTTP_201_CREATED
 
+from apps.order.constants import EXCHANGES_CHOICES
+from apps.profile_app.factories import UserFactory
+from apps.strategy.constants import CREATE_STRATEGY_DEFAULTS
 from apps.strategy.factories import StrategyFactory
 
 client = Client()
@@ -60,3 +63,80 @@ class TestStrategyDeleteView(TestCase):
 
         del test_data[key]
         self.assertEqual(response.json()['data'], test_data)
+
+
+class TestAccountCreateView(TestCase):
+    def test_creating_account_success(self):
+        api_key, api_secret = "K" * 32, "S" * 32
+        test_account = {
+            "exchange": EXCHANGES_CHOICES[0][0],
+            "api_key": api_key,
+            "api_secret": api_secret,
+        }
+        admin = UserFactory(username='admin')
+        client.force_login(admin)
+
+        response = client.post(reverse("api:api_account_create"), data=test_account)
+        data = response.json()
+        self.assertEqual(response.status_code, HTTP_201_CREATED)
+        self.assertEqual(data['data']['user'], admin.id)
+        self.assertEqual(data['data']['api_key'], api_key)
+        self.assertEqual(data['data']['api_secret'], api_secret)
+
+    def test_creating_account_without_exchange(self):
+        api_key, api_secret = "K" * 32, "S" * 32
+        teset_account = {
+            "api_key": api_key,
+            "api_secret": api_secret,
+        }
+        response = client.post(reverse("api:api_account_create"), data=teset_account)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['errors']['exchange'], ['This field may not be null.', ])
+
+    def test_creating_account_without_api_credentials_raises_exception(self):
+        test_account = {
+            "exchange": EXCHANGES_CHOICES[0][0],
+        }
+        response = client.post(reverse("api:api_account_create"), data=test_account)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['errors']['api_key'], ['This field may not be null.', ])
+        self.assertEqual(data['errors']['api_secret'], ['This field may not be null.', ])
+
+
+class TestStrategyCreateView(TestCase):
+    def test_creating_strategy_success(self):
+        test_strategy = {
+            "key": ["EXCHANGE", "KEY", "SECRET", "NAME_COIN", "NAME_COIN_TWO"],
+            "value": ["bittrex", "K" * 32, "S" * 32, "BTC", "ETH"],
+        }
+        admin = UserFactory(username='admin')
+        client.force_login(admin)
+
+        response = client.post(reverse("api:api_strategy_create"), data=test_strategy)
+        data = response.json()
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['data']['user'], admin.id)
+
+    def test_creating_account_without_exchange(self):
+        api_key, api_secret = "K" * 32, "S" * 32
+        teset_account = {
+            "api_key": api_key,
+            "api_secret": api_secret,
+        }
+        response = client.post(reverse("api:api_account_create"), data=teset_account)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['errors']['exchange'], ['This field may not be null.', ])
+
+    def test_creating_account_without_api_credentials_raises_exception(self):
+        test_account = {
+            "exchange": EXCHANGES_CHOICES[0][0],
+        }
+        response = client.post(reverse("api:api_account_create"), data=test_account)
+        data = response.json()
+        self.assertFalse(data['success'])
+        self.assertEqual(data['errors']['api_key'], ['This field may not be null.', ])
+        self.assertEqual(data['errors']['api_secret'], ['This field may not be null.', ])
+

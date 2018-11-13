@@ -64,17 +64,13 @@ class APIOrderView(generics.ListAPIView):
 class BaseApiCreateView(generics.CreateAPIView):
     serializer_class = StrategyCreateSerializer
 
-    def get_data_from_request(self, request):
-        return dict(request.data)
-
     def create(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=self.get_data_from_request(request))
+        serializer = self.serializer_class(data=self.get_serializer_context())
         if serializer.is_valid():
             serializer.save()
 
             headers = self.get_success_headers(serializer.data)
-            return Response({'success': True}, status=status.HTTP_201_CREATED, headers=headers)
-
+            return Response({'success': True, 'data': serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
         response_data = serializer.data
         response_data['errors'] = serializer.errors
         response_data['success'] = False
@@ -84,26 +80,30 @@ class BaseApiCreateView(generics.CreateAPIView):
 class APIStrategyCreateView(BaseApiCreateView):
     serializer_class = StrategyCreateSerializer
 
-    def get_data_from_request(self, request):
-        data = super().get_data_from_request(request)
+    def get_serializer_context(self):
+        request_data = dict(self.request.data)
         data = {
-            'data': dict(zip(data['key'], data['value'])),
-            'user': request.user.id
+            'data': dict(
+                zip(request_data.get('key'), request_data.get('value'))
+            ),
+            'user': self.request.user.id
         }
+
         return data
 
 
 class APIAccountCreateView(BaseApiCreateView):
     serializer_class = AccountCreateSerializer
 
-    def get_data_from_request(self, request):
-        data = super().get_data_from_request(request)
+    def get_serializer_context(self):
+        request_data = self.request.data.dict()
         data = {
-            'exchange': data.get('exchange')[0],
-            'api_key': data.get('api_key')[0],
-            'api_secret': data.get('api_secret')[0],
-            'user': request.user.id
+            'exchange': request_data.get('exchange'),
+            'api_key': request_data.get('api_key'),
+            'api_secret': request_data.get('api_secret'),
+            'user': self.request.user.id
         }
+
         return data
 
 
