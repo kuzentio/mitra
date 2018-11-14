@@ -10,6 +10,10 @@ class AccountsView(LoginRequiredMixin, generic.ListView):
     template_name = 'profile_app/account_list.html'
     model = Account
 
+    def get_queryset(self):
+        qs = super(AccountsView, self).get_queryset()
+        return qs.filter(user=self.request.user, is_active=True)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data()
         context['create_account_defaults'] = CREATE_ACCOUNT_DEFAULTS
