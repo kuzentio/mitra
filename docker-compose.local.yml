@@ -6,9 +6,10 @@ services:
         depends_on:
           - db
         env_file:
-          - docker/.env.local
+          - provision/.env.local
         volumes:
           - .:/mitra
+          - /var/run/docker.sock:/var/run/docker.sock  #  TODO: move to separate service
         ports:
           - "127.0.0.1:8000:8000"
         restart: always
@@ -29,7 +30,7 @@ services:
         ports:
           - "5432:5432"
         volumes:
-          - ./docker/provision:/docker-entrypoint-initdb.d
+          - ./provision/db:/docker-entrypoint-initdb.d
           - ./db/data:/var/lib/postgresql/data
         networks:
           mitra:

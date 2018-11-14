@@ -11,15 +11,23 @@ client = Client()
 
 class TestStrategyDeleteView(TestCase):
     def setUp(self):
+        self.user = UserFactory(username='user')
+        self.user.set_password('123')
+        self.user.save()
+
         self.strategy = StrategyFactory()
 
     def test_strategy_delete_view_do_not_process_get(self):
+        client.login(username=self.user.username, password='123')
+
         response = client.get(
             reverse('api:strategy_delete_view', args=(self.strategy.uuid, ))
         )
         self.assertTrue(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_strategy_set_value_view(self):
+        client.login(username=self.user.username, password='123')
+
         key = "key"
         value = "value"
         new_value = "new value"
@@ -34,6 +42,8 @@ class TestStrategyDeleteView(TestCase):
         self.assertEqual(response.json()['data']['key'], new_value)
 
     def test_strategy_delete_key_view(self):
+        client.login(username=self.user.username, password='123')
+
         key = "key"
         value = "value"
         self.strategy.data = {key: value}
@@ -46,6 +56,8 @@ class TestStrategyDeleteView(TestCase):
         self.assertEqual(response.json()['data'], dict())
 
     def test_strategy_delete_key_view_does_not_affect_another_keys(self):
+        client.login(username=self.user.username, password='123')
+
         key = "key"
         value = "value"
         test_data = {
@@ -65,7 +77,14 @@ class TestStrategyDeleteView(TestCase):
 
 
 class TestAccountCreateView(TestCase):
+
+    def setUp(self):
+        self.user = UserFactory(username='user')
+        self.user.set_password('123')
+        self.user.save()
+
     def test_creating_account_success(self):
+        client.login(username=self.user.username, password='123')
         api_key, api_secret = "K" * 32, "S" * 32
         test_account = {
             "exchange": EXCHANGES_CHOICES[0][0],
@@ -83,6 +102,7 @@ class TestAccountCreateView(TestCase):
         self.assertEqual(data['data']['api_secret'], api_secret)
 
     def test_creating_account_without_exchange(self):
+        client.login(username=self.user.username, password='123')
         api_key, api_secret = "K" * 32, "S" * 32
         teset_account = {
             "api_key": api_key,
@@ -94,6 +114,7 @@ class TestAccountCreateView(TestCase):
         self.assertEqual(data['errors']['exchange'], ['This field may not be null.', ])
 
     def test_creating_account_without_api_credentials_raises_exception(self):
+        client.login(username=self.user.username, password='123')
         test_account = {
             "exchange": EXCHANGES_CHOICES[0][0],
         }
@@ -105,7 +126,13 @@ class TestAccountCreateView(TestCase):
 
 
 class TestStrategyCreateView(TestCase):
+    def setUp(self):
+        self.user = UserFactory(username='user')
+        self.user.set_password('123')
+        self.user.save()
+
     def test_creating_strategy_success(self):
+        client.login(username=self.user.username, password='123')
         test_strategy = {
             "key": ["EXCHANGE", "KEY", "SECRET", "NAME_COIN", "NAME_COIN_TWO"],
             "value": ["bittrex", "K" * 32, "S" * 32, "BTC", "ETH"],
@@ -119,6 +146,7 @@ class TestStrategyCreateView(TestCase):
         self.assertEqual(data['data']['user'], admin.id)
 
     def test_creating_account_without_exchange(self):
+        client.login(username=self.user.username, password='123')
         api_key, api_secret = "K" * 32, "S" * 32
         teset_account = {
             "api_key": api_key,
@@ -130,6 +158,7 @@ class TestStrategyCreateView(TestCase):
         self.assertEqual(data['errors']['exchange'], ['This field may not be null.', ])
 
     def test_creating_account_without_api_credentials_raises_exception(self):
+        client.login(username=self.user.username, password='123')
         test_account = {
             "exchange": EXCHANGES_CHOICES[0][0],
         }

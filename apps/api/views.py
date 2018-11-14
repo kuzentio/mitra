@@ -1,9 +1,11 @@
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.api.serializers import OrderSerializer, StrategyCreateSerializer, AccountCreateSerializer
@@ -16,6 +18,7 @@ from apps.strategy.models import Strategy
 class APIOrderView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         extra_query = {}
@@ -63,6 +66,7 @@ class APIOrderView(generics.ListAPIView):
 
 class BaseApiCreateView(generics.CreateAPIView):
     serializer_class = StrategyCreateSerializer
+    permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=self.get_serializer_context())
@@ -79,6 +83,7 @@ class BaseApiCreateView(generics.CreateAPIView):
 
 class APIStrategyCreateView(BaseApiCreateView):
     serializer_class = StrategyCreateSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_context(self):
         request_data = dict(self.request.data)
@@ -94,6 +99,7 @@ class APIStrategyCreateView(BaseApiCreateView):
 
 class APIAccountCreateView(BaseApiCreateView):
     serializer_class = AccountCreateSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_context(self):
         request_data = self.request.data.dict()
@@ -107,6 +113,7 @@ class APIAccountCreateView(BaseApiCreateView):
         return data
 
 
+@login_required
 @api_view(["POST"])
 def strategy_set_value_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
@@ -117,6 +124,7 @@ def strategy_set_value_view(request, strategy_uuid):
     return JsonResponse({'success': True, 'data': strategy.data})
 
 
+@login_required
 @api_view(["POST"])
 def strategy_delete_key_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
@@ -126,6 +134,7 @@ def strategy_delete_key_view(request, strategy_uuid):
     return JsonResponse({'success': True, 'data': strategy.data})
 
 
+@login_required
 @api_view(["POST"])
 def strategy_delete_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
