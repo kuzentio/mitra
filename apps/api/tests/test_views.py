@@ -57,7 +57,7 @@ class TestStrategyDeleteView(TestCase):
 
     def test_strategy_delete_key_view_does_not_affect_another_keys(self):
         client.login(username=self.user.username, password='123')
-        
+
         key = "key"
         value = "value"
         test_data = {
