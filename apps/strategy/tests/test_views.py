@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
 
+from apps.profile_app.factories import UserFactory
 from apps.strategy.factories import StrategyFactory
 from apps.strategy.models import Strategy
 
@@ -10,7 +10,7 @@ client = Client()
 
 class TestStrategyListView(TestCase):
     def setUp(self):
-        self.user = User.objects.create(email='test@example.com', username='test')
+        self.user = UserFactory()
         self.user.set_password('123')
         self.user.save()
         self.strategy = StrategyFactory(user=self.user)
