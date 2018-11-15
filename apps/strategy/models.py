@@ -19,7 +19,7 @@ class Strategy(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}. {}'.format(self.pk, self.user)
+        return f'{self.pk}. {self.user}'
 
     def set_value(self, key, value):  # TODO: !
         self.data[key] = value
@@ -28,3 +28,6 @@ class Strategy(models.Model):
     def delete_key(self, key):
         self.data.pop(key)
         self.save()
+
+    def save_data_to_bucket(self):
+        pass

@@ -116,7 +116,10 @@ class APIAccountCreateView(BaseApiCreateView):
 @login_required
 @api_view(["POST"])
 def strategy_set_value_view(request, strategy_uuid):
-    strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
     key = request.POST.get('key', '')
     value = request.POST.get('value', '')
     strategy.set_value(key, value)
@@ -127,7 +130,10 @@ def strategy_set_value_view(request, strategy_uuid):
 @login_required
 @api_view(["POST"])
 def strategy_delete_key_view(request, strategy_uuid):
-    strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
     key = request.POST.get('key')
     strategy.delete_key(key)
 
@@ -137,7 +143,21 @@ def strategy_delete_key_view(request, strategy_uuid):
 @login_required
 @api_view(["POST"])
 def strategy_delete_view(request, strategy_uuid):
-    strategy = get_object_or_404(Strategy.objects.filter(uuid=strategy_uuid))
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
     strategy.is_deleted = True
     strategy.save()
     return JsonResponse({'success': True})
+
+
+@login_required
+@api_view(["POST"])
+def up_strategy_container(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+
+    pass
