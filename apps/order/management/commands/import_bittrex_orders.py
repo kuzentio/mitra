@@ -18,6 +18,14 @@ class Command(BaseCommand):
             default=None,
             help='Account email.'
         )
+        parser.add_argument(
+            '--exchange',
+            type=str,
+            action='store',
+            dest='exchange',
+            default=None,
+            help='Exchange name, for example: "bittrex".'
+        )
 
     def get_order_defaults(self, order):
         result = {}
@@ -43,37 +51,39 @@ class Command(BaseCommand):
                 defaults=defaults
             )
             if created:
-                self.stdout.write('Order {} has been created.'.format(order.pk))
+                self.stdout.write(f'Order {order.pk} has been created.')
 
         return
 
     def handle(self, *args, **options):
         email = options.get('email')
+        exchange = options.get('exchange')
         if not email:
             raise CommandError(
                 "Please provide --account_email. See details --help"
             )
-        account = Account.objects.filter(email=email, is_active=True)
-        if not account.exists():
-            raise CommandError(
-                "Could not find account with {} email".format(email)
-            )
-        account = account.get()
-        if not all([account.api_key, account.api_secret]):
-            raise CommandError(
-                "Wrong account, check that API_KEY and API_SECRET were provided for this account, and they correct."
-            )
-
-        bittrex = Bittrex(
-            account.api_key, account.api_secret,
-            # api_version=API_V2_0
-            api_version=API_V1_1
+        accounts = Account.objects.filter(
+            user__email=email,
+            exchange=Exchange.objects.get(name=exchange),  # TODO: refactor
         )
-        response = bittrex.get_order_history()
-        orders = response.get('result')
-        if orders is None:
-            self.stdout.write('There no new orders: API response - {}'.format(response))
-            return
-        self.save_orders(account, orders)
-        self.stdout.write('Done')
-        return
+        if not accounts.exists():
+            raise CommandError(
+                f"Could not find account for {exchange} with {email} email"
+            )
+        for account in accounts:
+            if not all([account.api_key, account.api_secret]):
+                raise CommandError(
+                    "Wrong account, check that API_KEY and API_SECRET were provided for this account, and they correct."
+                )
+
+            bittrex = Bittrex(
+                account.api_key, account.api_secret,
+                # api_version=API_V2_0
+                api_version=API_V1_1
+            )
+            response = bittrex.get_order_history()
+            orders = response.get('result')
+            if orders is None:
+                self.stdout.write(f'There no new orders: API response - {response}')
+            self.save_orders(account, orders)
+            self.stdout.write('Done')

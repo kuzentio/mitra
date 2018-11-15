@@ -15,7 +15,7 @@ class TestStrategyDeleteView(TestCase):
         self.user.set_password('123')
         self.user.save()
 
-        self.strategy = StrategyFactory()
+        self.strategy = StrategyFactory(user=self.user)
 
     def test_strategy_delete_view_do_not_process_get(self):
         client.login(username=self.user.username, password='123')

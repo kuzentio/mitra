@@ -14,7 +14,11 @@ class Command(BaseCommand):
     help = 'Import prices from Bittrex and store it into db.'
 
     def handle(self, *args, **options):
-        all_pairs = Order.objects.all().values_list('pair', flat=True).distinct()
+        orders = Order.objects.all()
+        if not orders.exists():
+            self.stdout.write('There is no orders')
+            return
+        all_pairs = orders.values_list('pair', flat=True).distinct()
         for pair in all_pairs:
             if os.environ.get('ENV') in ['local', 'test', None]:
                 tasks.import_bittrex_price(pair)

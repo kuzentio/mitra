@@ -25,13 +25,13 @@ services:
       "
   db:
     image: postgres:10.1
-    env_file:
+    environment:
       - provision/.env.local
     ports:
       - "5432:5432"
     volumes:
       - ./provision/db:/docker-entrypoint-initdb.d
-      - ./db/data:/var/lib/postgresql/data
+      - postgres-db:/var/lib/postgresql/data
     networks:
       mitra:
 
@@ -57,7 +57,7 @@ services:
       - provision/.env.local
     volumes:
       - .:/mitra
-      - ./db/data:/var/lib/postgresql/data
+      - postgres-db:/var/lib/postgresql/data
     depends_on:
       - rabbit
       - db
@@ -75,12 +75,14 @@ services:
       - provision/.env.local
     volumes:
       - .:/mitra
-      - ./db/data:/var/lib/postgresql/data
+      - postgres-db:/var/lib/postgresql/data
     depends_on:
       - worker
     networks:
       mitra:
 
+# Example of dynamic container
+#
 #  gbot:
 #    image: gbot
 #    volumes:
@@ -94,3 +96,6 @@ services:
 
 networks:
     mitra:
+volumes:
+  postgres-db:
+
