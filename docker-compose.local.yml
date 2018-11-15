@@ -78,6 +78,9 @@ services:
       - postgres-db:/var/lib/postgresql/data
     depends_on:
       - worker
+      - db
+      - web
+      - rabbit
     networks:
       mitra:
 
