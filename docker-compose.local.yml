@@ -3,6 +3,7 @@ version: '3'
 services:
   web:
     build: .
+    container_name: mitra_web
     depends_on:
       - db
     env_file:
@@ -25,6 +26,7 @@ services:
       "
   db:
     image: postgres:10.1
+    container_name: mitra_db
     environment:
       - provision/.env.local
     ports:
@@ -37,6 +39,7 @@ services:
 
   rabbit:
     hostname: rabbit
+    container_name: mitra_rabbit
     image: rabbitmq:latest
     environment:
       - RABBITMQ_DEFAULT_USER=admin
@@ -48,6 +51,7 @@ services:
 
   worker:
     build: .
+    container_name: mitra_worker
     command: >
       sh -c "
         pip install -r requirements/local.txt &&
@@ -66,6 +70,7 @@ services:
 
   scheduler:
     build: .
+    container_name: mitra_scheduler
     command: >
       sh -c "
         pip install -r requirements/local.txt &&

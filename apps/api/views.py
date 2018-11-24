@@ -154,10 +154,35 @@ def strategy_delete_view(request, strategy_uuid):
 
 @login_required
 @api_view(["POST"])
-def up_strategy_container(request, strategy_uuid):
+def start_strategy_view(request, strategy_uuid):
     strategy = get_object_or_404(Strategy.objects.filter(
         uuid=strategy_uuid,
         user=request.user
     ))
+    result = strategy.up_container()
 
-    pass
+    if result:
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Bot could not been initialized, maybe it already exists.'})
+
+
+@login_required
+@api_view(["POST"])
+def down_strategy_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.down_container()
+    return JsonResponse({'success': True})
+
+
+@login_required
+@api_view(["POST"])
+def close_orders_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.close_all_orders()
+    return JsonResponse({'success': True})
