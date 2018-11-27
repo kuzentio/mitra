@@ -1,6 +1,7 @@
 import docker
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 import uuid
 
@@ -20,11 +21,17 @@ class Strategy(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     data = JSONField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False)
+    port = models.PositiveIntegerField(validators=[MinValueValidator(7000), MaxValueValidator(7500)], unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.pk}. {self.user}'
+
+    @classmethod
+    def get_strategy_port(cls):
+        strategy = cls.objects.order_by('port').last()
+        return getattr(strategy, 'port', 7000)
 
     def set_value(self, key, value):
         self.data[key] = value
@@ -43,7 +50,7 @@ class Strategy(models.Model):
                 image='gbot',  # TODO: double check
                 network='mitra_mitra',
                 environment=env_data,
-                ports={'7000/tcp': 7000},
+                ports={'7000/tcp': 7000},  # TODO: be same as in STRATEGY_WEB_AUT_ENV
                 detach=True,
                 links=[('mitra_web', 'mitra_web'), ]
             )
@@ -64,4 +71,3 @@ class Strategy(models.Model):
         client = gbot.Client(host=f'http://{str(self.uuid)}', port='7000')
         response = client.close_orders()
         return response
-

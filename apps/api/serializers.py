@@ -23,7 +23,7 @@ class StrategyCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Strategy
-        fields = ('data', 'user')
+        fields = ('data', 'user', 'port')
         extra_kwargs = {
             "data": {
                 "validators": [

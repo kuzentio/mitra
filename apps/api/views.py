@@ -91,7 +91,8 @@ class APIStrategyCreateView(BaseApiCreateView):
             'data': dict(
                 zip(request_data.get('key'), request_data.get('value'))
             ),
-            'user': self.request.user.id
+            'user': self.request.user.id,
+            'port': Strategy.get_strategy_port()
         }
 
         return data
