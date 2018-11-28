@@ -47,15 +47,15 @@ class Strategy(models.Model):
         try:
             container = docker_client.containers.run(
                 name=self.uuid,
-                image='gbot',  # TODO: double check
+                image='gbot',
                 network='mitra_mitra',
                 environment=env_data,
-                ports={'7000/tcp': 7000},  # TODO: be same as in STRATEGY_WEB_AUT_ENV
+                ports={f'{self.port}/tcp': self.port},
                 detach=True,
                 links=[('mitra_web', 'mitra_web'), ]
             )
         except (docker.errors.APIError) as e:
-            return False
+            return e
         return container
 
     def down_container(self):
@@ -71,3 +71,11 @@ class Strategy(models.Model):
         client = gbot.Client(host=f'http://{str(self.uuid)}', port='7000')
         response = client.close_orders()
         return response
+
+    def restart_container(self):
+        try:
+            container = docker_client.containers.get(str(self.uuid))
+        except (docker.errors.NotFound, docker.errors.APIError):
+            return False
+        container.restart()
+        return True

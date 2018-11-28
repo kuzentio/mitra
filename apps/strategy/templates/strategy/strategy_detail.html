@@ -16,10 +16,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-md-1">
-
-        </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
             <table class="table">
                 <tbody>
                 {% for key, value in object.data.items %}
@@ -52,21 +49,21 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1">
         </div>
         <div class="col-md-2">
             <br>
-            <form action="{% url 'api:start_strategy_view' object.uuid %}" method="post" id="strategyForm">
+            <form action="{% url 'api:start_strategy_view' object.uuid %}" method="post" class="action-form">
                 {% csrf_token %}
                 <input class="btn btn-secondary btn-block" type="submit" value="up">
             </form>
             <p></p>
-            <form action="{% url 'api:close_orders_view' object.uuid %}" method="post">
+            <form action="{% url 'api:close_orders_view' object.uuid %}" method="post" class="action-form">
                 {% csrf_token %}
                 <input class="btn btn-secondary btn-block" type="submit" value="close orders">
             </form>
             <p></p>
-            <form action="{% url 'api:down_strategy_view' object.uuid %}" method="post" id="strategyForm">
+            <form action="{% url 'api:down_strategy_view' object.uuid %}" method="post" class="action-form">
                 {% csrf_token %}
                 <input class="btn btn-secondary btn-block" type="submit" value="down">
             </form>
@@ -159,6 +156,21 @@
                    $('#modalEdit').modal('hide');
                }
              });
+        });
+        $('.action-form').on('submit', function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function(data)
+               {
+                   $('#success-alert').show()
+               }
+            })
+
         });
         $('#modalEdit').on('show.bs.modal', function (event) {
             var $link = $(event.relatedTarget);

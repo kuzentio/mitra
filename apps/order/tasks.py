@@ -14,9 +14,8 @@ bittrex = Bittrex('', '', api_version=API_V1_1)  # Public API
 
 @shared_task(bind=True)
 def import_bittrex_orders_task(self):
-    # emails = Account.objects.all().values_list('user__email', flat=True)
     emails = User.objects.values_list('email', flat=True).distinct()
-    for exchange, _ in constants.EXCHANGES_CHOICES:
+    for exchange, _ in constants.EXCHANGES_CHOICES:  # TODO: check out query on db layer
         for email in emails:
             if email:
                 call_command('import_bittrex_orders', account_email=email, exchange=exchange)
