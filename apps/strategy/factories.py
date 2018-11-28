@@ -15,5 +15,6 @@ class StrategyFactory(factory.DjangoModelFactory):
 
     data = dict()
     is_deleted = False
+    port = factory.Iterator([7000, 7500])
     updated_at = factory.LazyFunction(datetime.datetime.now)
     created_at = factory.LazyFunction(datetime.datetime.now)

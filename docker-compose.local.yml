@@ -1,39 +1,109 @@
 version: '3'
 
 services:
-    web:
-        build: .
-        depends_on:
-          - db
-        env_file:
-          - provision/.env.local
-        volumes:
-          - .:/mitra
-          - /var/run/docker.sock:/var/run/docker.sock  #  TODO: move to separate service
-        ports:
-          - "127.0.0.1:8000:8000"
-        restart: always
-        stdin_open: true
-        tty: true
-        networks:
-          mitra:
-        command: >
-            sh -c "
-                pip install -r requirements/local.txt &&
-                python manage.py migrate
-                python manage.py runserver 0.0.0.0:8000
-            "
-    db:
-        image: postgres:10.1
-        environment:
-          - docker/.env.local
-        ports:
-          - "5432:5432"
-        volumes:
-          - ./provision/db:/docker-entrypoint-initdb.d
-          - ./db/data:/var/lib/postgresql/data
-        networks:
-          mitra:
+  web:
+    build: .
+    container_name: mitra_web
+    depends_on:
+      - db
+    env_file:
+      - provision/.env.local
+    volumes:
+      - .:/mitra
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      mitra:
+    command: >
+      sh -c "
+        pip install -r requirements/local.txt &&
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000
+      "
+  db:
+    image: postgres:10.1
+    container_name: mitra_db
+    environment:
+      - provision/.env.local
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./provision/db:/docker-entrypoint-initdb.d
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      mitra:
+
+  rabbit:
+    hostname: rabbit
+    container_name: mitra_rabbit
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=pass
+    ports:
+      - "5672:5672"
+    networks:
+      mitra:
+
+  worker:
+    build: .
+    container_name: mitra_worker
+    command: >
+      sh -c "
+        pip install -r requirements/local.txt &&
+        celery -A config worker -l info
+      "
+    env_file:
+      - provision/.env.local
+    volumes:
+      - .:/mitra
+      - postgres-db:/var/lib/postgresql/data
+    depends_on:
+      - rabbit
+      - db
+    networks:
+      mitra:
+
+  scheduler:
+    build: .
+    container_name: mitra_scheduler
+    command: >
+      sh -c "
+        pip install -r requirements/local.txt &&
+        celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+      "
+    env_file:
+      - provision/.env.local
+    volumes:
+      - .:/mitra
+      - postgres-db:/var/lib/postgresql/data
+    depends_on:
+      - worker
+      - db
+      - web
+      - rabbit
+    networks:
+      mitra:
+
+# Example of dynamic container
+#
+#  gbot:
+#    image: gbot
+#    volumes:
+#      - .:/mitra
+#    networks:
+#      mitra:
+#    env_file:
+#      - provision/temp/.env
+#    depends_on:
+#      - web
 
 networks:
     mitra:
+volumes:
+  postgres-db:
+

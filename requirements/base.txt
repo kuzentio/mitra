@@ -1,5 +1,6 @@
 Django==2.0.5
 psycopg2-binary==2.7.4
+docker==3.5.1
 
 django-import-export==1.0.0
 django-celery-beat==1.1.1

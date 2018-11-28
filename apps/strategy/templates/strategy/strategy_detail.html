@@ -2,21 +2,27 @@
 {% load staticfiles %}
 
 {% block css_imports %}
+    {{ block.super }}
     <link rel="stylesheet" href="{% static 'datatables.net-dt/css/jquery.dataTables.css' %}">
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block js_imports %}
+    {{ block.super }}
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 {% endblock %}
 
 {% block content %}
-    <h5>Strategy uuid - <i>{{ object.uuid }}</i></h5>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <table class="table">
                 <tbody>
                 {% for key, value in object.data.items %}
                     <tr>
-                        <td><input type="text" value="{{ key }}" disabled></td>
-                        <td><input type="text" value="{{ value }}" disabled></td>
+                        <td><input class="form-control" type="text" value="{{ key }}" readonly></td>
+                        <td><input class="form-control" type="text" value="{{ value }}" readonly></td>
                         <td>
                             <a href="#"
                                data-toggle="modal"
@@ -35,14 +41,34 @@
                     <tr>
                         <form action="{% url 'api:strategy_set_value_view' object.uuid %}" id="newKey">
                             {% csrf_token %}
-                            <td><input type="text" name="key"></td>
-                            <td><input type="text" name="value"></td>
-                            <td><input type="submit" class="btn btn-sm btn-success" value="Add"></td>
+                            <td><input class="form-control" type="text" name="key"></td>
+                            <td><input class="form-control" type="text" name="value"></td>
+                            <td><input type="submit" class="btn btn-success btn-block" value="Add"></td>
                         </form>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-2">
+            <br>
+            <form action="{% url 'api:start_strategy_view' object.uuid %}" method="post" class="action-form">
+                {% csrf_token %}
+                <input class="btn btn-secondary btn-block" type="submit" value="up">
+            </form>
+            <p></p>
+            <form action="{% url 'api:close_orders_view' object.uuid %}" method="post" class="action-form">
+                {% csrf_token %}
+                <input class="btn btn-secondary btn-block" type="submit" value="close orders">
+            </form>
+            <p></p>
+            <form action="{% url 'api:down_strategy_view' object.uuid %}" method="post" class="action-form">
+                {% csrf_token %}
+                <input class="btn btn-secondary btn-block" type="submit" value="down">
+            </form>
+        </div>
+    </div>
 
     <div class="modal" id="modalEdit" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
@@ -71,6 +97,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                </div>
                 </div>
             </div>
         </div>
@@ -129,6 +156,21 @@
                    $('#modalEdit').modal('hide');
                }
              });
+        });
+        $('.action-form').on('submit', function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function(data)
+               {
+                   $('#success-alert').show()
+               }
+            })
+
         });
         $('#modalEdit').on('show.bs.modal', function (event) {
             var $link = $(event.relatedTarget);

@@ -15,3 +15,5 @@ RUN pip3 install -r requirements/base.txt
 
 EXPOSE 8000
 EXPOSE 5432
+EXPOSE 5672
+EXPOSE 7000-7500

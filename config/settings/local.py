@@ -43,8 +43,7 @@ SHELL_PLUS_POST_IMPORTS = (
 
 USE_TZ = False
 
-# Celery application definition
-CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'amqp://admin:pass@rabbit:5672'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'

@@ -2,10 +2,11 @@ from datetime import datetime
 
 from bittrex import Bittrex, API_V1_1
 from celery import shared_task, app
+from django.contrib.auth.models import User
 from django.core.management import call_command
 
+from apps.order import constants
 from apps.order.models import Price
-from apps.profile_app.models import Account
 
 
 bittrex = Bittrex('', '', api_version=API_V1_1)  # Public API
@@ -13,9 +14,11 @@ bittrex = Bittrex('', '', api_version=API_V1_1)  # Public API
 
 @shared_task(bind=True)
 def import_bittrex_orders_task(self):
-    emails = Account.objects.all().values_list('user__email', flat=True)
-    for email in emails:
-        call_command('import_bittrex_orders', account_email=email)
+    emails = User.objects.values_list('email', flat=True).distinct()
+    for exchange, _ in constants.EXCHANGES_CHOICES:  # TODO: check out query on db layer
+        for email in emails:
+            if email:
+                call_command('import_bittrex_orders', account_email=email, exchange=exchange)
 
 
 @app.shared_task()
