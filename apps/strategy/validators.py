@@ -4,34 +4,6 @@ from apps.order.constants import EXCHANGES_CHOICES
 from apps.strategy.constants import CREATE_STRATEGY_DEFAULTS
 
 
-def validate_secret_length(data):
-    keys = data.keys()
-    values = data.values()
-    for key, value in zip(list(keys), list(values)):
-        if key == 'SECRET' and len(value) < 32:
-            raise serializers.ValidationError(
-                "Enter correct api secret looks like your api secret is less then 32 char"
-            )
-        if key == 'SECRET' and len(value) > 32:
-            raise serializers.ValidationError(
-                "Enter correct api secret looks like your api secret is more then 32 char"
-            )
-
-
-def validate_key_length(data):
-    keys = data.keys()
-    values = data.values()
-    for key, value in zip(list(keys), list(values)):
-        if key == 'KEY' and len(value) < 32:
-            raise serializers.ValidationError(
-                "Enter correct api key looks like your api key is less then 32 char"
-            )
-        if key == 'KEY' and len(value) > 32:
-            raise serializers.ValidationError(
-                "Enter correct api key looks like your api key is more then 32 char"
-            )
-
-
 def validate_exchange_name(data):
     keys = data.keys()
     values = data.values()

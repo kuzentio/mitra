@@ -16,6 +16,7 @@ class Strategy(models.Model):
         verbose_name_plural = 'Strategies'
 
     uuid = models.UUIDField(
+        # TODO: remove primary_key for uuid field, it breaks ID default ordering and first()/last()
         primary_key=True, default=uuid.uuid4, editable=False
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -27,11 +28,6 @@ class Strategy(models.Model):
 
     def __str__(self):
         return f'{self.pk}. {self.user}'
-
-    @classmethod
-    def get_strategy_port(cls):
-        strategy = cls.objects.order_by('port').last()
-        return getattr(strategy, 'port', 7000)
 
     def set_value(self, key, value):
         self.data[key] = value

@@ -30,8 +30,6 @@ class StrategyCreateSerializer(serializers.ModelSerializer):
                     validators.validate_required_keys,
                     validators.validate_white_spaces,
 
-                    validators.validate_key_length,
-                    validators.validate_secret_length,
                     validators.validate_exchange_name,
                     validators.validate_name_coin,
                 ]
@@ -56,13 +54,3 @@ class AccountCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Could not find any exchanges for this name.")
 
         return exchange
-
-    def validate_api_key(self, api_key):
-        validators.validate_key_length({"KEY": api_key})
-
-        return api_key
-
-    def validate_api_secret(self, api_secret):
-        validators.validate_secret_length({"SECRET": api_secret})
-
-        return api_secret

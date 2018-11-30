@@ -87,12 +87,13 @@ class APIStrategyCreateView(BaseApiCreateView):
 
     def get_serializer_context(self):
         request_data = dict(self.request.data)
+        strategies = Strategy.objects.order_by('-port')
         data = {
             'data': dict(
                 zip(request_data.get('key'), request_data.get('value'))
             ),
             'user': self.request.user.id,
-            'port': Strategy.get_strategy_port()
+            'port': strategies.last().port + 1 if strategies.exists() else 7000
         }
 
         return data
