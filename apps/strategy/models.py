@@ -64,8 +64,18 @@ class Strategy(models.Model):
         return True
 
     def close_all_orders(self):
-        client = gbot.Client(host=f'http://{str(self.uuid)}', port='7000')
+        client = gbot.Client(host=f'http://{str(self.uuid)}', port=f'{self.port}')
         response = client.close_orders()
+        return response
+
+    def get_orders(self):
+        client = gbot.Client(host=f'http://{str(self.uuid)}', port=f'{self.port}')
+        response = client.get_orders()
+        return response
+
+    def get_history(self):
+        client = gbot.Client(host=f'http://{str(self.uuid)}', port=f'{self.port}')
+        response = client.get_history()
         return response
 
     def restart_container(self):

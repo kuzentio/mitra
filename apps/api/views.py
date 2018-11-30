@@ -188,3 +188,26 @@ def close_orders_view(request, strategy_uuid):
     ))
     strategy.close_all_orders()
     return JsonResponse({'success': True})
+
+
+@login_required
+@api_view(["POST"])
+def get_orders_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.get_orders()
+    return JsonResponse({'success': True})
+
+
+@login_required
+@api_view(["POST"])
+def get_history_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.close_all_orders()
+
+    return JsonResponse({'success': True})
