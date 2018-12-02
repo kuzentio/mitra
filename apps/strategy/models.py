@@ -1,11 +1,12 @@
 import docker
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 import uuid
 
-from apps.strategy import constants, gbot
+from apps.strategy import gbot
 
 docker_client = docker.from_env()
 
@@ -15,9 +16,7 @@ class Strategy(models.Model):
         verbose_name = 'Strategy'
         verbose_name_plural = 'Strategies'
 
-    uuid = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False
-    )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     data = JSONField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False)
@@ -27,11 +26,6 @@ class Strategy(models.Model):
 
     def __str__(self):
         return f'{self.pk}. {self.user}'
-
-    @classmethod
-    def get_strategy_port(cls):
-        strategy = cls.objects.order_by('port').last()
-        return getattr(strategy, 'port', 7000)
 
     def set_value(self, key, value):
         self.data[key] = value
@@ -43,7 +37,10 @@ class Strategy(models.Model):
 
     def up_container(self):
         env_data = self.data
-        env_data.update(constants.STRATEGY_WEB_AUT_ENV)
+        env_data.update({
+            "WEB_AUTH_KEY": settings.SECRET_KEY,
+            "PORT": f'{self.port}'
+        })
         try:
             container = docker_client.containers.run(
                 name=self.uuid,
@@ -68,8 +65,18 @@ class Strategy(models.Model):
         return True
 
     def close_all_orders(self):
-        client = gbot.Client(host=f'http://{str(self.uuid)}', port='7000')
+        client = gbot.Client(host=f'http://{str(self.uuid)}', port=f'{self.port}')
         response = client.close_orders()
+        return response
+
+    def get_orders(self):
+        client = gbot.Client(host=f'http://{str(self.uuid)}', port=f'{self.port}')
+        response = client.get_orders()
+        return response
+
+    def get_history(self):
+        client = gbot.Client(host=f'http://{str(self.uuid)}', port=f'{self.port}')
+        response = client.get_history()
         return response
 
     def restart_container(self):

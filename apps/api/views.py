@@ -87,12 +87,13 @@ class APIStrategyCreateView(BaseApiCreateView):
 
     def get_serializer_context(self):
         request_data = dict(self.request.data)
+        strategies = Strategy.objects.order_by('-port')
         data = {
             'data': dict(
                 zip(request_data.get('key'), request_data.get('value'))
             ),
             'user': self.request.user.id,
-            'port': Strategy.get_strategy_port()
+            'port': strategies.last().port + 1 if strategies.exists() else 7000
         }
 
         return data
@@ -161,7 +162,6 @@ def start_strategy_view(request, strategy_uuid):
         user=request.user
     ))
     result = strategy.up_container()
-
     if result:
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'message': 'Bot could not been initialized, maybe it already exists.'})
@@ -186,4 +186,27 @@ def close_orders_view(request, strategy_uuid):
         user=request.user
     ))
     strategy.close_all_orders()
+    return JsonResponse({'success': True})
+
+
+@login_required
+@api_view(["POST"])
+def get_orders_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.get_orders()
+    return JsonResponse({'success': True})
+
+
+@login_required
+@api_view(["POST"])
+def get_history_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.close_all_orders()
+
     return JsonResponse({'success': True})

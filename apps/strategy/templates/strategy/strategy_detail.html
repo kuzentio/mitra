@@ -63,6 +63,16 @@
                 <input class="btn btn-secondary btn-block" type="submit" value="close orders">
             </form>
             <p></p>
+            <form action="{% url 'api:get_orders_view' object.uuid %}" method="post" class="action-form">
+                {% csrf_token %}
+                <input class="btn btn-danger btn-block" type="submit" value="get orders">
+            </form>
+            <p></p>
+            <form action="{% url 'api:get_history_view' object.uuid %}" method="post" class="action-form">
+                {% csrf_token %}
+                <input class="btn btn-danger btn-block" type="submit" value="get history">
+            </form>
+            <p></p>
             <form action="{% url 'api:down_strategy_view' object.uuid %}" method="post" class="action-form">
                 {% csrf_token %}
                 <input class="btn btn-secondary btn-block" type="submit" value="down">

@@ -1,4 +1,4 @@
-# WEB_CONTAINER_ID=$(shell docker ps --filter ancestor=mitra_web --format "{{.ID}}")
+WEB_CONTAINER_ID=$(shell docker ps -a -q  --filter name=mitra_web)
 
 init:
 	docker build -t "gbot" https://github.com/steeply/gbot-trader.git#master
@@ -8,6 +8,7 @@ start:
 	docker-compose -f docker-compose.local.yml up -d
 
 stop:
+	docker stop $(docker ps -a -q  --filter ancestor=gbot) || true
 	docker-compose -f docker-compose.local.yml down
 
 restart:
@@ -26,5 +27,5 @@ shell_plus:
 bash:
 	docker-compose -f docker-compose.local.yml exec web bash
 
-# attach:
-# 	docker attach $(WEB_CONTAINER_ID)
+attach:
+	docker attach $(WEB_CONTAINER_ID)

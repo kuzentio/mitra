@@ -17,10 +17,10 @@
             <tbody>
             {% for strategy in strategy_list %}
                 <tr>
-                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.data.EXCHANGE }}</td>
-                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.data.NAME_COIN }} - {{ strategy.data.NAME_COIN_TWO }}</td>
-                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.created_at }}</td>
-                    <td onclick="window.location='{% url 'strategy:detail' strategy.uuid %}'">{{ strategy.updated_at }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.pk %}'">{{ strategy.data.EXCHANGE }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.pk %}'">{{ strategy.data.NAME_COIN }} - {{ strategy.data.NAME_COIN_TWO }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.pk %}'">{{ strategy.created_at }}</td>
+                    <td onclick="window.location='{% url 'strategy:detail' strategy.pk %}'">{{ strategy.updated_at }}</td>
                     <td>
                         <form action="{% url 'api:strategy_delete_view' strategy.uuid %}" method="post" id="deleteStrategy">
                             {% csrf_token %}

@@ -21,6 +21,5 @@ class StrategyView(LoginRequiredMixin, generic.ListView):
 
 
 class StrategyDetailView(generic.DetailView):
-    pk_url_kwarg = 'strategy__uuid'
     model = Strategy
     template_name = 'strategy/strategy_detail.html'
