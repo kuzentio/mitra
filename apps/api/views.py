@@ -162,7 +162,6 @@ def start_strategy_view(request, strategy_uuid):
         user=request.user
     ))
     result = strategy.up_container()
-
     if result:
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'message': 'Bot could not been initialized, maybe it already exists.'})

@@ -1,4 +1,5 @@
 import docker
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -39,7 +40,10 @@ class Strategy(models.Model):
 
     def up_container(self):
         env_data = self.data
-        env_data.update(constants.STRATEGY_WEB_AUT_ENV)
+        env_data.update({
+            "WEB_AUTH_KEY": settings.SECRET_KEY,
+            "PORT": f'{self.port}'
+        })
         try:
             container = docker_client.containers.run(
                 name=self.uuid,
