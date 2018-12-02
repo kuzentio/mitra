@@ -6,7 +6,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 import uuid
 
-from apps.strategy import constants, gbot
+from apps.strategy import gbot
 
 docker_client = docker.from_env()
 
@@ -16,10 +16,7 @@ class Strategy(models.Model):
         verbose_name = 'Strategy'
         verbose_name_plural = 'Strategies'
 
-    uuid = models.UUIDField(
-        # TODO: remove primary_key for uuid field, it breaks ID default ordering and first()/last()
-        primary_key=True, default=uuid.uuid4, editable=False
-    )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     data = JSONField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False)
