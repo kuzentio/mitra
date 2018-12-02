@@ -29,11 +29,11 @@ class Strategy(models.Model):
 
     def set_value(self, key, value):
         self.data[key] = value
-        self.save(update_fields=['data', ])
+        self.save(update_fields=['data', 'updated_at'])
 
     def delete_key(self, key):
         self.data.pop(key)
-        self.save(update_fields=['data', ])
+        self.save(update_fields=['data', 'updated_at'])
 
     def up_container(self):
         env_data = self.data
