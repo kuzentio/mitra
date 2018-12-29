@@ -4,7 +4,7 @@
 {% block css_imports %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'datatables.net-dt/css/jquery.dataTables.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'jquery-ui-dist/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 {% endblock %}
@@ -63,9 +63,14 @@
                 <input class="btn btn-secondary btn-block" type="submit" value="close orders">
             </form>
             <p></p>
-            <form action="{% url 'api:get_orders_view' object.uuid %}" method="post" class="action-form">
+            <form action="{% url 'api:get_orders_view' object.uuid %}" method="post" class="">
                 {% csrf_token %}
-                <input class="btn btn-danger btn-block" type="submit" value="get orders">
+                <input class="btn btn-danger btn-block" type="submit" value="get orders" data-toggle="modal" data-target="#modalAction">
+            </form>
+            <p></p>
+            <form action="{% url 'api:sell_all_view' object.uuid %}" method="post" class="">
+                {% csrf_token %}
+                <input class="btn btn-danger btn-block" type="submit" value="sell all" data-toggle="modal">
             </form>
             <p></p>
             <form action="{% url 'api:get_history_view' object.uuid %}" method="post" class="action-form">
@@ -108,6 +113,23 @@
                 </div>
                 <div class="modal-footer">
                 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalAction" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- body -->
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
                 </div>
             </div>
         </div>
@@ -189,6 +211,13 @@
             render_kv_form(key, value);
         });
         $('#modalEdit').on('hide.bs.modal', function (event) {
+            location.reload();
+        });
+
+        $('#modalAction').on('show.bs.modal', function (event) {
+        });
+
+        $('#modalAction').on('hide.bs.modal', function (event) {
             location.reload();
         });
     </script>

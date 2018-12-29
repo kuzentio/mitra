@@ -1,3 +1,4 @@
+#  TODO: deprecated functional, should be removed with required package django-import-export also
 import csv
 
 import sys

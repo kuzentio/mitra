@@ -309,3 +309,5 @@ gbot-trader/
 frontend/
 
 /db
+/bots-logs
+/staticroot

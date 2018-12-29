@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -89,11 +88,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST'),
-        'PORT': 5432,
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
 
@@ -135,13 +134,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticroot')
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', 'static'),
+    os.path.join(BASE_DIR, 'node_modules'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 ADMIN_URL = r'^admin/'
@@ -166,3 +168,39 @@ TEST_RUNNER = 'config.helper.TestSuiteRunner'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+CELERY_BROKER_URL = 'amqp://admin:pass@rabbit:5672'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
+
+BOOTSTRAP4 = {
+    'jquery_url': STATIC_URL + 'jquery/dist/jquery.js',
+    'base_url': STATIC_URL + 'bootstrap/',
+    'css_url': STATIC_URL + 'bootstrap/dist/css/bootstrap.css',
+    'theme_url': None,
+    'javascript_url': STATIC_URL + 'bootstrap/dist/js/bootstrap.js',
+    'javascript_in_head': False,
+    'include_jquery': False,
+    'horizontal_label_class': 'col-md-3',
+    'horizontal_field_class': 'col-md-9',
+    'set_placeholder': True,
+    'required_css_class': '',
+    'error_css_class': 'has-error',
+    'success_css_class': 'has-success',
+    'formset_renderers': {
+        'default': 'bootstrap4.renderers.FormsetRenderer',
+    },
+    'form_renderers': {
+        'default': 'bootstrap4.renderers.FormRenderer',
+    },
+    'field_renderers': {
+        'default': 'bootstrap4.renderers.FieldRenderer',
+        'inline': 'bootstrap4.renderers.InlineFieldRenderer',
+    },
+}
+
+BOOTSTRAP_BASE_URL = '/static/bootstrap/'
+
+HOST_PWD = os.getenv('HOST_PWD')

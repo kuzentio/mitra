@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.css' %}">
     {% bootstrap_javascript jquery='full' %}
     {% block css_imports %}
-        <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+        <link rel="stylesheet" href="{% static 'jquery-ui-dist/jquery-ui.css' %}">
     {% endblock %}
     {% block js_imports %}
-        <script type="application/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+        <script type="application/javascript" src="{% static 'jquery-ui-dist/jquery-ui.js' %}"></script>
     {% endblock %}
     <style>
     {% block css %}{% endblock %}
@@ -24,6 +24,7 @@
     {% block navbar %}
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <a href="/"><img src="{% static 'img/logo.png' %}" width="50" height="50"></a>
+        {% if request.user.is_authenticated %}
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav mr-auto">
                 {% for exchange in exchanges_online %}
@@ -37,6 +38,7 @@
                 {% endfor %}
             </ul>
         </div>
+    {% endif %}
         <div class="mx-auto order-0"></div>
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
