@@ -25,6 +25,17 @@ class Client(object):
 
         return response
 
+    def sell_all(self):
+        """
+        This method post signal for selling all tokens
+        :return: Response
+        """
+        method = 'sell_all'
+        url = self._url.format(host=self.host, port=self.port, method=method)
+        response = requests.put(url, headers=self.headers)
+
+        return response
+
     def get_orders(self):
         """
         Get list of opened orders

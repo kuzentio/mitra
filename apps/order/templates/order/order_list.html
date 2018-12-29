@@ -5,12 +5,13 @@
 
 {% block css_imports %}
     <link rel="stylesheet" href="{% static 'datatables.net-dt/css/jquery.dataTables.css' %}">
-    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+{#    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">#}
+    <link rel="stylesheet" href="{% static 'jquery-ui-dist/jquery-ui.css' %}">
     <link rel="stylesheet" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
 {% endblock %}
 {% block js_imports %}
     <script src="{% static 'datatables.net/js/jquery.dataTables.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'jquery-ui-dist/jquery-ui.js' %}"></script>
     <script src="{% static 'order/js/utils.js' %}"></script>
 {% endblock %}
 

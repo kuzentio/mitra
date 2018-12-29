@@ -1,19 +1,23 @@
 WEB_CONTAINER_ID=$(shell docker ps -a -q  --filter name=mitra_web)
+GBOT_CONTAINER_IDS=$(shell docker ps -a -q --filter ancestor=gbot)
 
 init:
 	docker build -t "gbot" https://github.com/steeply/gbot-trader.git#master
-	docker-compose -f docker-compose.local.yml up --build
+	docker-compose -f docker-compose.local.yml build
 
 start:
 	docker-compose -f docker-compose.local.yml up -d
 
 stop:
-	docker stop $(docker ps -a -q  --filter ancestor=gbot) || true
+	docker rm --volumes --force $(GBOT_CONTAINER_IDS) || true
 	docker-compose -f docker-compose.local.yml down
 
 restart:
 	make stop
 	make start
+
+destroy:
+	docker-compose -f docker-compose.local.yml rm -f -s -v
 
 test:
 	docker-compose -f docker-compose.local.yml exec web python manage.py test

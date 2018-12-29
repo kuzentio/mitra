@@ -17,5 +17,4 @@ class OrderView(LoginRequiredMixin, TemplateView):
         context = super(OrderView, self).get_context_data()
         context['form'] = OrderPeriodForm(self.request.GET)
         context['exchange_name'] = self.kwargs.get('exchange_name', 'none')
-
         return context

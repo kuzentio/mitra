@@ -64,7 +64,7 @@ class Command(BaseCommand):
             )
         accounts = Account.objects.filter(
             user__email=email,
-            exchange=Exchange.objects.get(name=exchange),  # TODO: refactor
+            exchange__name=exchange
         )
         if not accounts.exists():
             raise CommandError(

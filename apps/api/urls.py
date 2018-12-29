@@ -5,7 +5,7 @@ from apps.api.views import (
     strategy_set_value_view, strategy_delete_key_view, strategy_delete_view, APIAccountCreateView,
     start_strategy_view, down_strategy_view,
     close_orders_view, get_history_view,
-    get_orders_view)
+    get_orders_view, sell_all_view)
 
 app_name = 'api'
 
@@ -21,6 +21,8 @@ urlpatterns = [
 
     url(r'^strategy/(?P<strategy_uuid>[\w.@+-]+)/manage/close_orders/$', close_orders_view,
         name='close_orders_view'),
+    url(r'^strategy/(?P<strategy_uuid>[\w.@+-]+)/manage/sell_all/$', sell_all_view,
+        name='sell_all_view'),
     url(r'^strategy/(?P<strategy_uuid>[\w.@+-]+)/manage/get_orders/$', get_orders_view,
         name='get_orders_view'),
     url(r'^strategy/(?P<strategy_uuid>[\w.@+-]+)/manage/get_history/$', get_history_view,

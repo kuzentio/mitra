@@ -210,3 +210,13 @@ def get_history_view(request, strategy_uuid):
     strategy.close_all_orders()
 
     return JsonResponse({'success': True})
+
+
+def sell_all_view(request, strategy_uuid):
+    strategy = get_object_or_404(Strategy.objects.filter(
+        uuid=strategy_uuid,
+        user=request.user
+    ))
+    strategy.sell_all()
+
+    return JsonResponse({'success': True})
