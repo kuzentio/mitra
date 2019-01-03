@@ -42,6 +42,7 @@ class PriceFactory(factory.DjangoModelFactory):
     class Meta:
         model = Price
         django_get_or_create = ('pair', )
+    exchange = factory.SubFactory('apps.order.factories.ExchangeFactory')
     pair = 'BTC-ETH'
     ask = FuzzyDecimal(0.025, 2.25)
     timestamp = factory.LazyFunction(datetime.datetime.now)
