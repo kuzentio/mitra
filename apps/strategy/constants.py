@@ -15,7 +15,6 @@ CREATE_STRATEGY_DEFAULTS = OrderedDict([
 
 STRATEGY_WEB_AUT_ENV = {
     "WEB_AUTH_KEY": SECRET_KEY,
-    # "PORT": "7000",  # TODO: hardcoded
     "TIME_ZONE": "Europe/Kiev",  # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
     "LOG_TRANSPORTS": "1",  # Transfer logs to file
     # "LOG_DEBUG": "true",  #
