@@ -6,9 +6,11 @@ redis==2.10.6
 uuid==1.30
 flake8==3.6.0
 
-python-bittrex==0.3.0
 python-dotenv==0.9.1
 python-logstash==0.4.6
+
+python-bittrex==0.3.0
+poloniex==0.0.17
 
 django-elasticsearch-dsl==0.5.1
 django-import-export==1.0.0

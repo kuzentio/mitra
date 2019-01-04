@@ -22,7 +22,7 @@ class Strategy(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     data = JSONField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False)
-    port = models.PositiveIntegerField(validators=[MinValueValidator(7000), MaxValueValidator(7500)], unique=True)  #  TODO: harcoded
+    port = models.PositiveIntegerField(validators=[MinValueValidator(7000), MaxValueValidator(7500)], unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

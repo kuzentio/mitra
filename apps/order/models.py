@@ -17,7 +17,7 @@ class Order(models.Model):
         (constants.ORDER_TYPE_BUY, constants.ORDER_TYPE_BUY.lower()),
         (constants.ORDER_TYPE_SELL, constants.ORDER_TYPE_SELL.lower()),
     )
-    uuid = models.UUIDField(max_length=255, blank=True, null=True, help_text='Remote unique identifier')
+    uuid = models.CharField(max_length=255, blank=True, null=True, help_text='Remote unique identifier')
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
     account = models.ForeignKey('profile_app.Account', on_delete=models.CASCADE)
 
@@ -40,6 +40,7 @@ class Order(models.Model):
 
 
 class Price(models.Model):
+    exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
     pair = models.CharField(max_length=10, unique=True)
     ask = models.DecimalField(decimal_places=8, max_digits=12)
     bid = models.DecimalField(decimal_places=8, max_digits=12)

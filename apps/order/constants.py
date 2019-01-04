@@ -31,3 +31,17 @@ BITTREX_ORDER_MAPPING = (
     ('TimeStamp', 'opened_at'),
     ('Closed', 'closed_at'),
 )
+
+POLONIEX_ORDER_MAPPING = (
+    ('orderNumber', 'uuid',),
+    ('type', 'type'),
+    ('total', '-'),
+    ('amount', 'quantity'),
+    ('rate', '-'),
+    ('date', '-'),
+    ('globalTradeID', '-'),
+    ('tradeID', '-'),
+    ('fee', '-'),
+    ('TimeStamp', 'opened_at'),
+    ('category', '-'),
+)
