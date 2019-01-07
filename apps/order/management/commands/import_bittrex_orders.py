@@ -2,7 +2,7 @@ from bittrex import Bittrex, API_V1_1
 from django.core.management import BaseCommand, CommandError
 from django.db.models import Q
 
-from apps.order.constants import BITTREX_ORDER_MAPPING, EXCHANGES_CHOICES, BITTREX
+from apps.order.constants import BITTREX_ORDER_MAPPING, BITTREX
 from apps.order.models import Order, Exchange
 from apps.profile_app.models import Account
 

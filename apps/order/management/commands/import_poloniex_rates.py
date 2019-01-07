@@ -9,7 +9,7 @@ bittrex = Bittrex('', '', api_version=API_V1_1)  # Public API
 
 
 class Command(BaseCommand):
-    help = 'Import prices from Poloniex and store it into db.'
+    help = 'Import rates from Poloniex and store it into db.'
 
     def handle(self, *args, **options):
         orders = Order.objects.filter(exchange__name='poloniex')

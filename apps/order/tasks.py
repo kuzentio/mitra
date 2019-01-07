@@ -22,12 +22,12 @@ def import_bittrex_orders_task():
 
 
 @app.shared_task()
-def import_bittrex_prices_task():
-    call_command('import_bittrex_prices')
+def import_bittrex_rates_task():
+    call_command('import_bittrex_rates')
 
 
 @app.shared_task()
-def import_bittrex_price(pair):
+def import_bittrex_rates(pair):
     response = bittrex.get_ticker(pair)
     result = response['result']
     if result:  # TODO: install Logger (!)
