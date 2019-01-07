@@ -4,9 +4,10 @@ from bittrex import Bittrex, API_V1_1
 from celery import app
 from django.contrib.auth.models import User
 from django.core.management import call_command
+from django.db.models import Q
 from poloniex import Poloniex
 
-from apps.order.constants import EXCHANGES_CHOICES
+from apps.order.constants import POLONIEX, BITTREX
 from apps.order.models import Price, Exchange
 
 bittrex = Bittrex('', '', api_version=API_V1_1)  # Public API
@@ -37,7 +38,7 @@ def import_bittrex_price(pair):
             'data': result,
         }
         price, created = Price.objects.get_or_create(
-            pair=pair, exchange=Exchange.objects.get(name=EXCHANGES_CHOICES[0][0]),
+            pair=pair, exchange=Exchange.objects.get(name=BITTREX),
             defaults=defaults
         )
         if not created:
@@ -67,15 +68,19 @@ def import_poloniex_rates(pair):
     poloniex = Poloniex()
     _pair = '_'.join(pair.split('-'))
     response = poloniex.returnTicker()[_pair]
+    poloniex = Exchange.objects.get(name=POLONIEX)
     if response:
         defaults = {
             'ask': response['lowestAsk'],
             'bid': response['highestBid'],
             'timestamp': datetime.now(),
-            'data': dict(response)
+            'data': dict(response),
+            'exchange_id': poloniex.id,
+            'pair': pair
         }
-        price, created = Price.objects.get_or_create(
-            pair=pair, exchange=Exchange.objects.get(name=EXCHANGES_CHOICES[1][0]),
+        price, created = Price.objects.filter(
+            Q(pair=pair) & Q(exchange=poloniex)
+        ).get_or_create(
             defaults=defaults
         )
         if not created:

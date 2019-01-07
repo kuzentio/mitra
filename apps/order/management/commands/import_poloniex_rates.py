@@ -1,5 +1,3 @@
-import os
-
 from bittrex import Bittrex, API_V1_1
 from django.core.management import BaseCommand
 
@@ -20,8 +18,5 @@ class Command(BaseCommand):
             return
         all_pairs = orders.values_list('pair', flat=True).distinct()
         for pair in all_pairs:
-            if os.environ.get('ENV') in ['local', 'test', None]:
-                tasks.import_poloniex_rates(pair)
-
-            tasks.import_bittrex_price.apply_async((pair,))
+            tasks.import_poloniex_rates(pair)
         self.stdout.write('Done')

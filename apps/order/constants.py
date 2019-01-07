@@ -3,6 +3,8 @@ from datetime import datetime
 ORDER_TYPE_BUY = 'BUY'
 ORDER_TYPE_SELL = 'SELL'
 
+BITTREX = 'bittrex'
+POLONIEX = 'poloniex'
 
 EXCHANGES_CHOICES = [
     ('bittrex', 'Bittrex'),
