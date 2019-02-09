@@ -64,7 +64,7 @@ class APIOrderView(generics.ListAPIView):
         return response
 
 
-class BaseApiCreateView(generics.CreateAPIView):
+class BaseAPIStrategyCreateView(generics.CreateAPIView):
     serializer_class = StrategyCreateSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -81,7 +81,7 @@ class BaseApiCreateView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-class APIStrategyCreateView(BaseApiCreateView):
+class APIStrategyCreateView(BaseAPIStrategyCreateView):
     serializer_class = StrategyCreateSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -99,7 +99,7 @@ class APIStrategyCreateView(BaseApiCreateView):
         return data
 
 
-class APIAccountCreateView(BaseApiCreateView):
+class APIAccountCreateView(BaseAPIStrategyCreateView):
     serializer_class = AccountCreateSerializer
     permission_classes = (IsAuthenticated,)
 
