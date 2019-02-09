@@ -1,9 +1,10 @@
 from decimal import Decimal
 
+from django.db.models import Q
 from poloniex import Poloniex, PoloniexCommandException
 from django.core.management import BaseCommand, CommandError
 
-from apps.order.constants import EXCHANGES_CHOICES, POLONIEX_ORDER_MAPPING
+from apps.order.constants import POLONIEX_ORDER_MAPPING, POLONIEX
 from apps.order.models import Order, Exchange
 from apps.profile_app.models import Account
 
@@ -26,7 +27,7 @@ class Command(BaseCommand):
             action='store',
             dest='exchange',
             default=None,
-            help='Exchange name, for example: "bittrex".'
+            help='Exchange name, for example: "poloniex".'
         )
 
     def get_order_defaults(self, order):
@@ -48,13 +49,13 @@ class Command(BaseCommand):
     def save_orders(self, account, orders, pair):
         for order in orders:
             uuid = order.get('orderNumber')
-
             defaults = self.get_order_defaults(order)
-            defaults['exchange_id'] = Exchange.objects.get(name=EXCHANGES_CHOICES[1][0]).id
+            defaults['account_id'] = account.id
+            defaults['exchange_id'] = Exchange.objects.get(name=POLONIEX).id
             defaults['pair'] = pair
-            order, created = Order.objects.get_or_create(
-                uuid=uuid,
-                account=account,
+            order, created = Order.objects.filter(
+                Q(uuid=uuid) & Q(account=account)
+            ).get_or_create(
                 defaults=defaults
             )
             if created:
@@ -84,9 +85,11 @@ class Command(BaseCommand):
                 api_key, api_secret
             )
             try:
+                # history = polo.returnTradeHistory(start=1000, end=1000000000)
                 history = polo.returnTradeHistory()
             except PoloniexCommandException as e:
                 self.stdout.write(f'Poloniex connection problem. {e}')
+                return
             for pair in list(history):
                 orders = history[pair]
                 pair = '-'.join(pair.split('_'))

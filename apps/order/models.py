@@ -41,7 +41,7 @@ class Order(models.Model):
 
 class Price(models.Model):
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
-    pair = models.CharField(max_length=10, unique=True)
+    pair = models.CharField(max_length=10)
     ask = models.DecimalField(decimal_places=8, max_digits=12)
     bid = models.DecimalField(decimal_places=8, max_digits=12)
     timestamp = models.DateTimeField(blank=True, null=True)
@@ -49,3 +49,6 @@ class Price(models.Model):
 
     def __str__(self):
         return '{0}: {1}'.format(self.pair, self.ask)
+
+    class Meta:
+        unique_together = ('pair', 'exchange')

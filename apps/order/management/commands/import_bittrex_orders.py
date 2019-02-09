@@ -1,7 +1,8 @@
 from bittrex import Bittrex, API_V1_1
 from django.core.management import BaseCommand, CommandError
+from django.db.models import Q
 
-from apps.order.constants import BITTREX_ORDER_MAPPING, EXCHANGES_CHOICES
+from apps.order.constants import BITTREX_ORDER_MAPPING, BITTREX
 from apps.order.models import Order, Exchange
 from apps.profile_app.models import Account
 
@@ -44,10 +45,11 @@ class Command(BaseCommand):
             uuid = order.get('OrderUuid')
 
             defaults = self.get_order_defaults(order)
-            defaults['exchange_id'] = Exchange.objects.get(name=EXCHANGES_CHOICES[0][0]).id
-            order, created = Order.objects.get_or_create(
-                uuid=uuid,
-                account=account,
+            defaults['account_id'] = account.id
+            defaults['exchange_id'] = Exchange.objects.get(name=BITTREX).id
+            order, created = Order.objects.filter(
+                Q(uuid=uuid) & Q(account=account)
+            ).get_or_create(
                 defaults=defaults
             )
             if created:

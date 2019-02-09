@@ -1,5 +1,3 @@
-import os
-
 from bittrex import Bittrex, API_V1_1
 from django.core.management import BaseCommand
 
@@ -11,7 +9,7 @@ bittrex = Bittrex('', '', api_version=API_V1_1)  # Public API
 
 
 class Command(BaseCommand):
-    help = 'Import prices from Bittrex and store it into db.'
+    help = 'Import rates from Bittrex and store it into db.'
 
     def handle(self, *args, **options):
         orders = Order.objects.filter(exchange=Exchange.objects.get(name=EXCHANGES_CHOICES[0][0]))
@@ -20,8 +18,5 @@ class Command(BaseCommand):
             return
         all_pairs = orders.values_list('pair', flat=True).distinct()
         for pair in all_pairs:
-            if os.environ.get('ENV') in ['local', 'test', None]:
-                tasks.import_bittrex_price(pair)
-
-            tasks.import_bittrex_price.apply_async((pair,))
+            tasks.import_bittrex_rates(pair)
         self.stdout.write('Done')
