@@ -27,3 +27,6 @@ Here is list of Make command tasted on OSX:
 *    test - run ``manage.py tests`` inside container  
 *    codestyle - runs codestyles checks
 *    shell_plus - alias for ``manage.py shell_plus``
+
+It could be an issue if try to run tests before container were provisioned,
+then try to wait until provision would be done, then run ``make test``

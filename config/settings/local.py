@@ -17,7 +17,6 @@ MIDDLEWARE += [
 INTERNAL_IPS = ['localhost', '127.0.0.1']
 
 INSTALLED_APPS += (
-    'django_extensions',
     'debug_toolbar',
 )
 

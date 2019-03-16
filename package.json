@@ -4,6 +4,7 @@
   "description": "### How to run it locally",
   "main": "index.js",
   "dependencies": {
+    "popper.js": "^1.14.3",
     "bootstrap": "^4.1.1",
     "datatables.net": "^1.10.16",
     "datatables.net-dt": "^1.10.16",
