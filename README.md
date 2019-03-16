@@ -6,12 +6,17 @@ Requirements:
 *    Docker = 2.0.0
 *    docker-compose = 1.23.2 
 
-#####For install project make sure that ports
+#### For install project make sure that ports
+
 (8000, 5432, 5672, [7000-7500]) are not allocated.
 
 then run
-#####``make init``
-#####``make start``
+
+``make init``
+``make start``
+
+#### For install project make sure that ports
+(8000, 5432, 5672, [7000-7500]) are not allocated.
 
 Here is list of Make command tasted on OSX:
 *    init - initing project 
