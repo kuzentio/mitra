@@ -2,7 +2,8 @@ WEB_CONTAINER_ID=$(shell docker ps -a -q  --filter name=mitra_web)
 GBOT_CONTAINER_IDS=$(shell docker ps -a -q --filter ancestor=gbot)
 
 init:
-	docker build -t "gbot" https://github.com/steeply/gbot-trader.git#master
+	docker build -t "gbot" https://github.com/steeply/gbot-trader.git#master || true
+	docker network create mitra
 	docker-compose -f docker-compose.local.yml build
 
 start:
@@ -33,3 +34,5 @@ bash:
 
 attach:
 	docker attach $(WEB_CONTAINER_ID)
+web-logs:
+	docker logs $(WEB_CONTAINER_ID) -f

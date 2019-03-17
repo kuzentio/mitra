@@ -51,7 +51,7 @@ class Strategy(models.Model):
             container = docker_client.containers.run(
                 name=self.uuid,
                 image='gbot',
-                network='mitra_mitra',
+                # network='mitra_mitra',
                 environment=env_data,
                 ports={f'{self.port}/tcp': self.port},
                 detach=True,

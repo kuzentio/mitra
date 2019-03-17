@@ -6,7 +6,7 @@ services:
     container_name: mitra_web
     depends_on:
       - db
-      - npm
+      - npm-install-dependencies
     env_file:
       - provision/.env.local
     volumes:
@@ -28,7 +28,7 @@ services:
       "
     environment:
       - HOST_PWD=${PWD}
-  npm:
+  npm-install-dependencies:
     build: .
     container_name: mitra_npm
     depends_on:
@@ -52,7 +52,7 @@ services:
     environment:
       - provision/.env.local
     ports:
-      - "5432:5432"
+      - "5000:5432"
     volumes:
       - ./provision/db:/docker-entrypoint-initdb.d
       - postgres-db:/var/lib/postgresql/data
