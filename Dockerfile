@@ -32,9 +32,6 @@ RUN npm -v
 # Use latest npm
 RUN npm i npm@latest -g
 
-
-
-
 RUN mkdir /mitra
 WORKDIR /mitra
 ADD . .
@@ -44,5 +41,6 @@ RUN pip3 install -r requirements/base.txt
 
 EXPOSE 8088
 EXPOSE 5432
+EXPOSE 5000
 EXPOSE 5672
 EXPOSE 7000-7500

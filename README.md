@@ -8,15 +8,12 @@ Requirements:
 
 #### For install project make sure that ports
 
-(8000, 5432, 5672, [7000-7500]) are not allocated.
+(8088, 5000, 5672, [7000-7500]) are not allocated.
 
 then run
 
 ``make init``
 ``make start``
-
-#### For install project make sure that ports
-(8000, 5432, 5672, [7000-7500]) are not allocated.
 
 Here is list of Make command tasted on OSX:
 *    init - initing project 
