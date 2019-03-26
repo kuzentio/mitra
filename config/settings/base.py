@@ -170,7 +170,7 @@ TEST_RUNNER = 'config.helper.TestSuiteRunner'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-CELERY_BROKER_URL = 'amqp://admin:pass@rabbit:5672'
+CELERY_BROKER_URL = 'amqp://admin:pass@rabbit:5670'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'

@@ -40,9 +40,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# CELERY_BROKER_URL = os.environ.get('REDIS_URI')
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TASK_SERIALIZER = 'json'
-#
-# CELERY_RESULT_BACKEND = 'django-db'
+ALLOWED_HOSTS += ['dextra-test.herokuapp.com', ]
+
+DATABASES['default'] = dj_database_url.config()
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
+CELERY_BROKER_URL = CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')

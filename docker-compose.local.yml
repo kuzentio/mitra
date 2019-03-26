@@ -67,7 +67,7 @@ services:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=pass
     ports:
-      - "5672:5672"
+      - "5670:5672"
     networks:
       mitra:
 
