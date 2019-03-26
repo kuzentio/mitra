@@ -1,5 +1,7 @@
 from .base import *  # noqa
 
+import dj_database_url
+
 DEBUG = False
 
 SECRET_KEY = os.environ['SECRET_KEY']
