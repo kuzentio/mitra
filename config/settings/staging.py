@@ -47,7 +47,6 @@ if not os.path.exists(os.path.join(BASE_DIR, 'node_modules'),):
     os.makedirs(os.path.join(BASE_DIR, 'node_modules'),)
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'node_modules'),
     os.path.join(BASE_DIR, 'static'),
 ]
 
