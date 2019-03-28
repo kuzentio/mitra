@@ -8,9 +8,9 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 ALLOWED_HOSTS = ['*']
 
-INSTALLED_APPS += (
-    'gunicorn',
-)
+# INSTALLED_APPS += (
+#     'gunicorn',
+# )
 
 
 LOGGING = {
@@ -34,10 +34,10 @@ LOGGING = {
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-MIDDLEWARE += [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-]
+#
+# MIDDLEWARE += [
+#     'whitenoise.middleware.WhiteNoiseMiddleware',
+# ]
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # if not os.path.exists(os.path.join(BASE_DIR, 'node_modules')):
