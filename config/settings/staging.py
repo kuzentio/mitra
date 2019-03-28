@@ -33,13 +33,12 @@ LOGGING = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MIDDLEWARE += [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # if not os.path.exists(os.path.join(BASE_DIR, 'node_modules')):
 #     os.makedirs(os.path.join(BASE_DIR, 'node_modules'))
@@ -56,9 +55,6 @@ DATABASES['default'] = dj_database_url.config()
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 CELERY_BROKER_URL = CLOUDAMQP_URL = os.environ.get('CLOUDAMQP_URL')
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
