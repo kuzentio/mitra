@@ -43,11 +43,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # if not os.path.exists(os.path.join(BASE_DIR, 'node_modules')):
 #     os.makedirs(os.path.join(BASE_DIR, 'node_modules'))
-if not os.path.exists("/app/node_modules/"):
-    os.makedirs("/app/node_modules/")
+if not os.path.exists(os.path.join(BASE_DIR, 'node_modules'),):
+    os.makedirs(os.path.join(BASE_DIR, 'node_modules'),)
 
 STATICFILES_DIRS = [
-    '/app/node_modules/',
+    os.path.join(BASE_DIR, 'node_modules'),
     os.path.join(BASE_DIR, 'static'),
 ]
 
